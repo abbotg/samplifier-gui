@@ -3,6 +3,7 @@ package nzero.samplifier.gui;
 import nzero.samplifier.model.Register;
 
 import javax.swing.*;
+import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
 import java.awt.*;
@@ -14,7 +15,10 @@ public class RegisterPanel extends JPanel {
         super(new GridLayout(1, 0));
         this.register = register;
 
-        JTable table = new JTable(new RegisterTableModel(register)) {
+        AbstractTableModel tableModel = register.isWritable()
+                ? new WriteRegisterTableModel(register) : new ReadRegisterTableModel(register);
+
+        JTable table = new JTable(tableModel) {
             @Override
             public TableCellEditor getCellEditor(int row, int column) {
                 if (column == 2) {

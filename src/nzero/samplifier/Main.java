@@ -36,7 +36,7 @@ public class Main {
         bitMaps1.add(new BitMap("Items",6,0));
 
         Register register = new Register("RCV_AGOC5", 0, true, bitMaps);
-        Register register1 = new Register("TestReg", 0, true,bitMaps1);
+        Register register1 = new Register("TestReg", 0, false,bitMaps1);
         List<Register> registers = new ArrayList<>();
         registers.add(register);
         registers.add(register1);

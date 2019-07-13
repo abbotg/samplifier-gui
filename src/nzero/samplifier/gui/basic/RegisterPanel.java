@@ -1,4 +1,4 @@
-package nzero.samplifier.gui;
+package nzero.samplifier.gui.basic;
 
 import nzero.samplifier.model.Register;
 
@@ -8,6 +8,9 @@ import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
 import java.awt.*;
 
+/**
+ * An individual view of a register, containing a single JTable
+ */
 public class RegisterPanel extends JPanel {
     private Register register;
 
@@ -41,7 +44,7 @@ public class RegisterPanel extends JPanel {
             }
         };
 
-        table.setPreferredScrollableViewportSize(new Dimension(500, 80));
+        table.setPreferredScrollableViewportSize(new Dimension(500, 120));
         table.setFillsViewportHeight(true);
 
         // Wrap the table in a scroll pane

@@ -1,18 +1,18 @@
 package nzero.samplifier;
 
 import nzero.samplifier.gui.MainWindow;
-import nzero.samplifier.gui.RegisterPanel;
-import nzero.samplifier.gui.TableDemo;
 import nzero.samplifier.model.BitMap;
 import nzero.samplifier.model.Register;
+import nzero.samplifier.util.RegMapBootstrapper;
 
-import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class Main {
 
-    public static void main(String[] args) {
+    public static void main(String... args) {
+        /* Turn off metal's use of bold fonts */
+        //UIManager.put("swing.boldMetal", Boolean.FALSE);
         //Schedule a job for the event-dispatching thread:
         //creating and showing this application's GUI.
         javax.swing.SwingUtilities.invokeLater(Main::createAndShowGUI);
@@ -41,7 +41,14 @@ public class Main {
         registers.add(register);
         registers.add(register1);
 
-        new MainWindow(registers);
+        Register register2 = new Register("WRT_AGOC5", 0, false, bitMaps);
+        Register register3 = new Register("WRT_AGOC6", 0, true, bitMaps1);
 
+        registers.add(register2);
+        registers.add(register3);
+
+//        new MainWindow(registers);
+
+        new MainWindow(RegMapBootstrapper.buildFromFile("res/RegisterMapping.json"));
     }
 }

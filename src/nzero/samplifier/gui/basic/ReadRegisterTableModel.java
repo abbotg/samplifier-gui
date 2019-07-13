@@ -1,9 +1,6 @@
-package nzero.samplifier.gui;
+package nzero.samplifier.gui.basic;
 
-import nzero.samplifier.model.BitMap;
 import nzero.samplifier.model.Register;
-
-import javax.swing.table.AbstractTableModel;
 
 /**
  * "Basic" mode

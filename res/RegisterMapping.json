@@ -1,0 +1,17 @@
+[
+  {
+    "name": "RegisterName",
+    "isWritable": true,
+    "address": 1000012,
+    "bitMaps": [
+      {
+        "name": "BitMapName",
+        "msb": 9,
+        "lsb": 8,
+        "dataType": "BIN",
+        "dataMax": 1111,
+        "dataMin": 0
+      }
+    ]
+  }
+]

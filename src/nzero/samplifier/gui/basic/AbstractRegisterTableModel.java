@@ -1,4 +1,4 @@
-package nzero.samplifier.gui;
+package nzero.samplifier.gui.basic;
 
 import nzero.samplifier.model.BitMap;
 import nzero.samplifier.model.Register;
@@ -25,18 +25,34 @@ public abstract class AbstractRegisterTableModel extends AbstractTableModel {
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
         // BitMaps correspond to rows in the table
-        BitMap bitMap = register.getBitMaps().get(rowIndex);
+        BitMap bitMap = getBitMap(rowIndex);
         switch (columnIndex) {
             case 0:
                 return bitMap.getBitRange() + " (" + bitMap.getLength() + ")";
             case 1:
                 return bitMap.getName();
             case 2:
-                return bitMap.getData();
+                return getFormattedData(bitMap); // TODO: Extra stuff added here to display proper thing
             default:
                 return null;
         }
 
+    }
+
+    private Object getFormattedData(BitMap bitMap) {
+        int data = register.getData(bitMap);
+        switch (bitMap.getDataType()) {
+            case BOOL:
+                return data == 1 ? Boolean.TRUE : Boolean.FALSE;
+            case BIN:
+                return String.format("%" + bitMap.getLength() + "s", Integer.toBinaryString(data)).replace(' ', '0');
+            case DEC:
+                return Integer.toString(data);
+            case HEX:
+                return Integer.toHexString(data);
+            default:
+                return null; // TODO: ?
+        }
     }
 
     /**
@@ -84,6 +100,13 @@ public abstract class AbstractRegisterTableModel extends AbstractTableModel {
             System.out.println();
         }
         System.out.println("--------------------------");
+        System.out.print("Register data: ");
+        System.out.println(Integer.toBinaryString(register.getData()));
+        System.out.println("--------------------------");
+    }
+
+    public BitMap getBitMap(int rowIndex) {
+        return register.getBitMaps().get(rowIndex);
     }
 
 
@@ -101,7 +124,7 @@ public abstract class AbstractRegisterTableModel extends AbstractTableModel {
 //            data[i] = new Object[] {
 //                    bitMap.getBitRange() + " (" + bitMap.getLength() + ')',
 //                    bitMap.getName(),
-//                    bitMap.getData()
+//                    bitMap.getFormattedData()
 //            };
 //        }
 //        return data;

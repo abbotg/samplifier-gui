@@ -22,10 +22,21 @@ public class BitMap {
         this.name = name;
         this.msb = msb;
         this.lsb = lsb;
-        this.dataType = dataType;
-        this.maxVal = maxVal;
-        this.minVal = minVal;
         this.data = data;
+
+        if (maxVal - minVal == 0) {
+            this.maxVal = 2 << getLength() - 1;
+            this.minVal = 0;
+        } else {
+            this.maxVal = maxVal;
+            this.minVal = minVal;
+        }
+
+        if (msb - lsb == 0) { // single bit
+            this.dataType = DataType.BOOL;
+        } else {
+            this.dataType = dataType;
+        }
     }
 
     public BitMap(String name,

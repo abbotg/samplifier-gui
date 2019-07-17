@@ -31,6 +31,18 @@
 - Reg map bootstrapper
 - Force use Metal LAF
 - Figure out local pref/profile storage schema
+- Profile bootstrapper
+- Integrate profile controls into menus
+- GUI/Arduino communication sketch
+- Test bench/CLI wrapper
+- dataMin and dataMax in RegisterMapping.json can be null
+- Handling of "Dont care" bitmaps separately than "Inaccessible", DC should be a recorded bit map in the register mapping.
+This is because the register doesn't hold onto its size as an attribute, it infers it from the bit map sizes
+
+## Documentation notes
+
+- dataType is a Dont Care if length is one (RegMapBootstrapper)
+- 
 
 ## Figure out
 
@@ -49,6 +61,7 @@
         - Debug
     - Format data as checkbox, etc?
     - Show bit ranges?
+    - Show write regs in tabbed pane or combo box
 - Profile
     - Save as...
     - Load...

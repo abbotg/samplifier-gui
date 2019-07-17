@@ -2,16 +2,48 @@ package nzero.samplifier.profile;
 
 import nzero.samplifier.model.Register;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
+import java.util.prefs.BackingStoreException;
+import java.util.prefs.Preferences;
+import java.util.stream.Collectors;
 
 public class ProfileManager {
     private List<Profile> profiles;
 
 
-    public ProfileManager(String profileManifestFilename) {
+    public ProfileManager() {
+        profiles = buildFromPreferences();
+    }
 
+    private static List<Profile> buildFromPreferences() {
+        Preferences preferences = Preferences.userRoot().node("nzero/samplifier/profiles");
+        String[] profileNames;
+        try {
+            profileNames = preferences.keys();
+        } catch (BackingStoreException e) {
+            System.err.println("Error getting preferences: " + e.getMessage());
+            profileNames = new String[]{};
+        }
+
+        List<Profile> profiles = new ArrayList<>(profileNames.length);
+
+        for (String profileName : profileNames) {
+            String data = preferences.get(profileName, "");
+            String[] regs = data.split(";");
+            Map<String, String> profileMap = Arrays.stream(regs)
+                    .map(reg -> reg.split(":"))
+                    .collect(Collectors.toMap(split -> split[0], split -> split[1], (a, b) -> b, LinkedHashMap::new));
+            profiles.add(new Profile(profileName, profileMap));
+        }
+        return profiles;
+    }
+
+    private static void saveToPreferences(Profile profile) {
+        String key = profile.getName();
+        String value = profile.getRegisterNames().stream().map(registerName -> registerName + ':' + profile.getRegisterData(registerName) + ';').collect(Collectors.joining());
+
+        Preferences preferences = Preferences.userRoot().node("nzero/samplifier/profiles");
+        preferences.put(key, value); // TODO: handle max length before this
     }
 
     /**
@@ -29,22 +61,9 @@ public class ProfileManager {
             throw new ProfileMismatchException();
         }
 
-        List<Register> sourceRegs = profile.getRegisters();
-        try {
-            for (int i = 0; i < sourceRegs.size(); i++) { // Iterate over registers
-                Register sourceReg = sourceRegs.get(i);
-                Register destReg = destRegs.get(i);
-                destReg.setData(sourceReg.getData());
-//                for (int j = 0; j < sourceReg.getNumMappings(); j++) { // Iterate over bit maps
-//                    BitMap sourceBitMap = sourceReg.getBitMaps().get(j);
-//                    BitMap destBitMap = destReg.getBitMaps().get(j);
-//                    destBitMap.setData(sourceBitMap.getRawData()); // Set data
-//                }
-            }
-        } catch (IndexOutOfBoundsException e) {
-            throw new ProfileMismatchException(); // TODO: this is bad
+        for (Register destReg : destRegs) {
+            destReg.setData(profile.getRegisterData(destReg.getName()));
         }
-
     }
 
     /**
@@ -54,42 +73,20 @@ public class ProfileManager {
      * @implNote This check verifies the profile's registers and target's registers bit maps are sequentially the same
      * length, and depends on the List's ordering of bit maps and registers.
      */
+    // TODO; registers are identified by name and bit width, change to address and bit width?
     public boolean areCompatible(Profile profile, List<Register> registers) {
-        // must have same num registers
-        if (profile.getRegisters().size() != registers.size()) {
-            return false;
-        }
-
-        // Iterate over registers
-        for (int i = 0; i < registers.size(); i++) {
-            Register a = profile.getRegisters().get(i);
-            Register b = registers.get(i);
-
-            // bit width and number of bit maps in both registers must be equal
-            if (a.getBitWidth() == b.getBitWidth() && a.getBitMaps().size() == b.getBitMaps().size()) {
-                // Iterate over bit maps, make sure they're all the same length
-                for (int j = 0; j < a.getBitMaps().size(); j++) {
-                    if (a.getBitMaps().get(j).getLength() != b.getBitMaps().get(j).getLength())
-                        return false;
-                }
-            } else {
-                return false; // registers do not have same bit width and num bit maps
-            }
-        }
-        return true;
+        return registers.stream().allMatch(register -> profile.hasRegister(register.getName())
+                && profile.getRegisterSize(register.getName()) == register.getBitWidth());
     }
 
     public List<String> getProfiles() {
-        List<String> profileNames = new ArrayList<>(profiles.size());
-        for (Profile profile : profiles) {
-            profileNames.add(profile.getName());
-        }
-        return profileNames;
+        return profiles.stream().map(Profile::getName).collect(Collectors.toCollection(() -> new ArrayList<>(profiles.size())));
     }
 
     public void createProfile(String name, List<Register> registers) {
         Profile profile = new Profile(name, deepCopy(registers)); // TODO: check for dup names? Propogate changed back to GUI?
         profiles.add(profile);
+        saveToPreferences(profile);
     }
 
     public void removeProfile(String name) {
@@ -100,12 +97,7 @@ public class ProfileManager {
     }
 
     private Profile getProfile(String name) {
-        for (Profile profile : profiles) {
-            if (profile.getName().equals(name)) {
-                return profile;
-            }
-        }
-        return null;
+        return profiles.stream().filter(profile -> profile.getName().equals(name)).findFirst().orElse(null);
     }
 
     public int numProfiles() {
@@ -117,10 +109,7 @@ public class ProfileManager {
     }
 
     private static List<Register> deepCopy(List<Register> sourceRegs) {
-        List<Register> destRegs = new ArrayList<>(sourceRegs.size());
-        for (Register sourceReg : sourceRegs) {
-            destRegs.add(new Register(sourceReg));
-        }
-        return destRegs;
+        return sourceRegs.stream().map(Register::new).collect(Collectors.toCollection(() -> new ArrayList<>(sourceRegs.size())));
     }
+
 }

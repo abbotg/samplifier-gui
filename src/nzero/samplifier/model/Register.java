@@ -121,5 +121,18 @@ public class Register {
         this.data &= ~getMask(bitMap);
         this.data |= data << bitMap.getLsb();
     }
+
+    /**
+     * Returns a binary string representing the register, padded to its length
+     * @return
+     */
+    public String getBinaryString() {
+        return String.format("%"  + getBitWidth() + "s", Integer.toBinaryString(1));
+    }
+
+    @Override
+    public String toString() {
+        return getName();
+    }
 }
 

@@ -44,7 +44,11 @@ public class RegisterPanel extends JPanel {
             }
         };
 
-        table.setPreferredScrollableViewportSize(new Dimension(500, 120));
+        if (register.isWritable()) { // TODO: hacky
+            table.setPreferredScrollableViewportSize(new Dimension(500, 120));
+        } else {
+            table.setPreferredScrollableViewportSize(new Dimension(500, 120));
+        }
         table.setFillsViewportHeight(true);
 
         // Wrap the table in a scroll pane

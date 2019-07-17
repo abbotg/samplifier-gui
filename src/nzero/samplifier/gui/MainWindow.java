@@ -2,22 +2,28 @@ package nzero.samplifier.gui;
 
 import nzero.samplifier.gui.basic.RegisterPanel;
 import nzero.samplifier.model.Register;
+import nzero.samplifier.profile.ProfileManager;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.util.ArrayList;
 import java.util.List;
 
 public class MainWindow {
     private List<Register> registers;
     private JFrame frame;
     private JPanel rootPanel; // root below the JFrame
-    private final JTabbedPane writeRegTabbedPane, readRegTabbedPane;
+    private final JPanel writeRegTabbedPane;
+    //    private final JTabbedPane writeRegTabbedPane;
+    private final JTabbedPane readRegTabbedPane;
     private JToolBar writeRegToolbar, readRegToolbar;
+    private JComboBox<String> comboBox;
 
     private JButton writeButton, writeAllButton, readButton, readAllButton, continuousReadButton;
 
-    private JMenu profilesMenu;
+    private JMenu loadProfilesMenu;
+    private ProfileManager profileManager;
 
 
     public MainWindow(List<Register> registers) {
@@ -37,7 +43,8 @@ public class MainWindow {
         /// Create panels ///
         /////////////////////
 
-        writeRegTabbedPane = new JTabbedPane(JTabbedPane.LEFT);
+//        writeRegTabbedPane = new JTabbedPane(JTabbedPane.LEFT);
+        writeRegTabbedPane = new JPanel(new CardLayout());
         readRegTabbedPane = new JTabbedPane(JTabbedPane.LEFT);
 
         writeRegTabbedPane.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 0));
@@ -46,9 +53,12 @@ public class MainWindow {
         // Create the "cards" in the card layout, which are RegisterPanels
         // and add them to the writeRegTabbedPane. The cards (registers) are identified
         // by their name (a string)
+        List<String> writeRegisterNames = new ArrayList<>();
+
         for (Register register : registers) {
             if (register.isWritable()) {
                 writeRegTabbedPane.add(new RegisterPanel(register), register.getName()); // this is a deep call
+                writeRegisterNames.add(register.getName()); // TODO: still need to handle dup names
             } else {
                 readRegTabbedPane.add(new RegisterPanel(register), register.getName());
             }
@@ -57,10 +67,21 @@ public class MainWindow {
         rootPanel = new JPanel();
         rootPanel.setLayout(new BoxLayout(rootPanel, BoxLayout.PAGE_AXIS));
 
+//        writeRegTabbedPane.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
+
+        comboBox = new JComboBox<>(writeRegisterNames.toArray(new String[0]));
+        comboBox.setEditable(false);
+        comboBox.addItemListener(e -> {
+            CardLayout layout = (CardLayout) writeRegTabbedPane.getLayout();
+            layout.show(writeRegTabbedPane, (String) e.getItem());
+        });
+
+
         // Write register view
         writeRegToolbar = new JToolBar();
         writeRegToolbar.add(new JLabel("Writable Registers"), BorderLayout.LINE_START);
         writeRegToolbar.addSeparator();
+        writeRegToolbar.add(comboBox);
         writeRegToolbar.add(writeButton);
         writeRegToolbar.add(writeAllButton);
         writeRegToolbar.setFloatable(false);
@@ -95,6 +116,7 @@ public class MainWindow {
 
 
         configureActionListeners();
+        updateProfilesMenu();
 
 
         // Called last
@@ -141,9 +163,8 @@ public class MainWindow {
         menuItem.addActionListener(this::profileSaveAsButton);
         profileMenu.add(menuItem);
 
-        menuItem = new JMenuItem("Load...");
-        menuItem.addActionListener(this::profileLoadButton);
-        profileMenu.add(menuItem);
+        loadProfilesMenu = new JMenu("Load");
+        profileMenu.add(loadProfilesMenu);
 
         menuItem = new JMenuItem("Load default");
         menuItem.addActionListener(this::profileLoadDefaultButton);
@@ -169,19 +190,25 @@ public class MainWindow {
     }
 
     private void profileSaveAsButton(ActionEvent e) {
-
-    }
-
-    private void profileLoadButton(ActionEvent e) {
+        profileManager.createProfile("" + Math.random(), registers); // todo
+        updateProfilesMenu();
 
     }
 
     private void profileLoadDefaultButton(ActionEvent e) {
-
+        profileManager.removeProfile();
     }
 
     private void profileSetDefaultButton(ActionEvent e) {
 
+    }
+
+    public void updateProfilesMenu() {
+        if (profileManager == null) {
+            profileManager = new ProfileManager();
+        }
+        List<String> profiles = profileManager.getProfiles();
+        profiles.stream().map(JMenu::new).map(menu -> loadProfilesMenu.add(menu));
     }
 
 

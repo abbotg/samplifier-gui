@@ -1,15 +1,812 @@
 [
   {
-    "name": "RegisterName",
+    "name": "RCV_COR1",
     "isWritable": true,
     "address": 1000012,
     "bitMaps": [
       {
-        "name": "BitMapName",
-        "msb": 9,
+        "name": "Upper part of 15-bit code for all 15-bit correlators",
+        "msb": 15,
         "lsb": 8,
         "dataType": "BIN",
-        "dataMax": 1111,
+        "dataMax": 0,
+        "dataMin": 0
+      },
+      {
+        "name": "8-bit code for 8-bit correlator, lower section for others",
+        "msb": 7,
+        "lsb": 0,
+        "dataType": "BIN",
+        "dataMax": 0,
+        "dataMin": 0
+      }
+    ]
+  },
+  {
+    "name": "RCV_COR2",
+    "isWritable": true,
+    "address": 1000012,
+    "bitMaps": [
+      {
+        "name": "Upper 15-bit code for 31-bit correlator",
+        "msb": 14,
+        "lsb": 0,
+        "dataType": "BIN",
+        "dataMax": 0,
+        "dataMin": 0
+      }
+    ]
+  },
+  {
+    "name": "RCV_AGOC1",
+    "isWritable": true,
+    "address": 1000012,
+    "bitMaps": [
+      {
+        "name": "Fine 1s Threshold",
+        "msb": 15,
+        "lsb": 10,
+        "dataType": "BIN",
+        "dataMax": 0,
+        "dataMin": 0
+      },
+      {
+        "name": "Window Size",
+        "msb": 9,
+        "lsb": 0,
+        "dataType": "BIN",
+        "dataMax": 0,
+        "dataMin": 0
+      }
+    ]
+  },
+  {
+    "name": "RCV_AGOC2",
+    "isWritable": true,
+    "address": 1000012,
+    "bitMaps": [
+      {
+        "name": "Sequential 1s Threshold",
+        "msb": 14,
+        "lsb": 8,
+        "dataType": "BIN",
+        "dataMax": 0,
+        "dataMin": 0
+      },
+      {
+        "name": "Moderate 1s Threshold",
+        "msb": 7,
+        "lsb": 0,
+        "dataType": "BIN",
+        "dataMax": 0,
+        "dataMin": 0
+      }
+    ]
+  },
+  {
+    "name": "RCV_AGOC3",
+    "isWritable": true,
+    "address": 1000012,
+    "bitMaps": [
+      {
+        "name": "Boundary Flag Threshold",
+        "msb": 14,
+        "lsb": 10,
+        "dataType": "BIN",
+        "dataMax": 0,
+        "dataMin": 0
+      },
+      {
+        "name": "Sequential 0s Threshold",
+        "msb": 9,
+        "lsb": 0,
+        "dataType": "BIN",
+        "dataMax": 0,
+        "dataMin": 0
+      }
+    ]
+  },
+  {
+    "name": "RCV_AGOC4",
+    "isWritable": true,
+    "address": 1000012,
+    "bitMaps": [
+      {
+        "name": "Max Gain Limit",
+        "msb": 15,
+        "lsb": 12,
+        "dataType": "BIN",
+        "dataMax": 0,
+        "dataMin": 0
+      },
+      {
+        "name": "Bottom Comparator Threshold",
+        "msb": 11,
+        "lsb": 6,
+        "dataType": "BIN",
+        "dataMax": 0,
+        "dataMin": 0
+      },
+      {
+        "name": "Top Comparator Threshold",
+        "msb": 5,
+        "lsb": 0,
+        "dataType": "BIN",
+        "dataMax": 0,
+        "dataMin": 0
+      }
+    ]
+  },
+  {
+    "name": "RCV_AGOC5",
+    "isWritable": true,
+    "address": 1000012,
+    "bitMaps": [
+      {
+        "name": "Gain Reset",
+        "msb": 13,
+        "lsb": 10,
+        "dataType": "BIN",
+        "dataMax": 0,
+        "dataMin": 0
+      },
+      {
+        "name": "Offset Reset",
+        "msb": 9,
+        "lsb": 4,
+        "dataType": "BIN",
+        "dataMax": 0,
+        "dataMin": 0
+      },
+      {
+        "name": "Gain Mux",
+        "msb": 3,
+        "lsb": 3,
+        "dataType": "BIN",
+        "dataMax": 0,
+        "dataMin": 0
+      },
+      {
+        "name": "Gain Enable",
+        "msb": 2,
+        "lsb": 2,
+        "dataType": "BIN",
+        "dataMax": 0,
+        "dataMin": 0
+      },
+      {
+        "name": "Offset Enable",
+        "msb": 1,
+        "lsb": 1,
+        "dataType": "BIN",
+        "dataMax": 0,
+        "dataMin": 0
+      },
+      {
+        "name": "AGOC Reset",
+        "msb": 0,
+        "lsb": 0,
+        "dataType": "BIN",
+        "dataMax": 0,
+        "dataMin": 0
+      }
+    ]
+  },
+  {
+    "name": "RCV_MISC",
+    "isWritable": true,
+    "address": 1000012,
+    "bitMaps": [
+      {
+        "name": "cor_sel",
+        "msb": 14,
+        "lsb": 10,
+        "dataType": "BIN",
+        "dataMax": 0,
+        "dataMin": 0
+      },
+      {
+        "name": "AGOC_sel",
+        "msb": 9,
+        "lsb": 0,
+        "dataType": "BIN",
+        "dataMax": 0,
+        "dataMin": 0
+      },
+      {
+        "name": "en_cor_sel",
+        "msb": 14,
+        "lsb": 10,
+        "dataType": "BIN",
+        "dataMax": 0,
+        "dataMin": 0
+      },
+      {
+        "name": "Correlator Error Threshold (4:0 for 31 bit, 3:0 otherwise)",
+        "msb": 9,
+        "lsb": 0,
+        "dataType": "BIN",
+        "dataMax": 0,
+        "dataMin": 0
+      }
+    ]
+  },
+  {
+    "name": "RCV_TMG1",
+    "isWritable": true,
+    "address": 1000012,
+    "bitMaps": [
+      {
+        "name": "Timing Reset",
+        "msb": 12,
+        "lsb": 12,
+        "dataType": "BIN",
+        "dataMax": 0,
+        "dataMin": 0
+      },
+      {
+        "name": "Show Clock Value",
+        "msb": 11,
+        "lsb": 0,
+        "dataType": "BIN",
+        "dataMax": 0,
+        "dataMin": 0
+      }
+    ]
+  },
+  {
+    "name": "RCV_TMG2",
+    "isWritable": true,
+    "address": 1000012,
+    "bitMaps": [
+      {
+        "name": "Analog Activate Value",
+        "msb": 11,
+        "lsb": 0,
+        "dataType": "BIN",
+        "dataMax": 0,
+        "dataMin": 0
+      }
+    ]
+  },
+  {
+    "name": "RCV_TMG3",
+    "isWritable": true,
+    "address": 1000012,
+    "bitMaps": [
+      {
+        "name": "Analog On Value",
+        "msb": 11,
+        "lsb": 0,
+        "dataType": "BIN",
+        "dataMax": 0,
+        "dataMin": 0
+      }
+    ]
+  },
+  {
+    "name": "RCV_TMG4",
+    "isWritable": true,
+    "address": 1000012,
+    "bitMaps": [
+      {
+        "name": "RF On Value",
+        "msb": 11,
+        "lsb": 0,
+        "dataType": "BIN",
+        "dataMax": 0,
+        "dataMin": 0
+      }
+    ]
+  },
+  {
+    "name": "RCV_TMG5",
+    "isWritable": true,
+    "address": 1000012,
+    "bitMaps": [
+      {
+        "name": "Analog Off Value",
+        "msb": 11,
+        "lsb": 0,
+        "dataType": "BIN",
+        "dataMax": 0,
+        "dataMin": 0
+      }
+    ]
+  },
+  {
+    "name": "RCV_TMG6",
+    "isWritable": true,
+    "address": 1000012,
+    "bitMaps": [
+      {
+        "name": "RF Off Value",
+        "msb": 11,
+        "lsb": 0,
+        "dataType": "BIN",
+        "dataMax": 0,
+        "dataMin": 0
+      }
+    ]
+  },
+  {
+    "name": "RCV_CLK1",
+    "isWritable": true,
+    "address": 1000012,
+    "bitMaps": [
+      {
+        "name": "csub_sel_10 through csub_sel_0",
+        "msb": 10,
+        "lsb": 0,
+        "dataType": "BIN",
+        "dataMax": 0,
+        "dataMin": 0
+      }
+    ]
+  },
+  {
+    "name": "RCV_CLK2",
+    "isWritable": true,
+    "address": 1000012,
+    "bitMaps": [
+      {
+        "name": "DIV_11 through DIV_0",
+        "msb": 11,
+        "lsb": 0,
+        "dataType": "BIN",
+        "dataMax": 0,
+        "dataMin": 0
+      }
+    ]
+  },
+  {
+    "name": "RCV_CLK3",
+    "isWritable": true,
+    "address": 1000012,
+    "bitMaps": [
+      {
+        "name": "HVT_SEL_0 through HVT_SEL_9",
+        "msb": 9,
+        "lsb": 0,
+        "dataType": "BIN",
+        "dataMax": 0,
+        "dataMin": 0
+      }
+    ]
+  },
+  {
+    "name": "RCV_CLK4",
+    "isWritable": true,
+    "address": 1000012,
+    "bitMaps": [
+      {
+        "name": "OUT_SEL_1, OUT_SEL_2",
+        "msb": 15,
+        "lsb": 14,
+        "dataType": "BIN",
+        "dataMax": 0,
+        "dataMin": 0
+      },
+      {
+        "name": "EXT_CLK_IN_SEL",
+        "msb": 13,
+        "lsb": 13,
+        "dataType": "BIN",
+        "dataMax": 0,
+        "dataMin": 0
+      },
+      {
+        "name": "BYPASS_PREDIV",
+        "msb": 12,
+        "lsb": 12,
+        "dataType": "BIN",
+        "dataMax": 0,
+        "dataMin": 0
+      },
+      {
+        "name": "RESET_DIVIDER",
+        "msb": 11,
+        "lsb": 11,
+        "dataType": "BIN",
+        "dataMax": 0,
+        "dataMin": 0
+      },
+      {
+        "name": "LVT_SEL_9 through LVT_SEL_0",
+        "msb": 9,
+        "lsb": 0,
+        "dataType": "BIN",
+        "dataMax": 0,
+        "dataMin": 0
+      }
+    ]
+  },
+  {
+    "name": "RCV_CLK5",
+    "isWritable": true,
+    "address": 1000012,
+    "bitMaps": [
+      {
+        "name": "RVT_SEL_9 through RVT_SEL_0",
+        "msb": 15,
+        "lsb": 6,
+        "dataType": "BIN",
+        "dataMax": 0,
+        "dataMin": 0
+      },
+      {
+        "name": "VREF2_SEL",
+        "msb": 5,
+        "lsb": 5,
+        "dataType": "BIN",
+        "dataMax": 0,
+        "dataMin": 0
+      },
+      {
+        "name": "VREF1_SEL",
+        "msb": 4,
+        "lsb": 4,
+        "dataType": "BIN",
+        "dataMax": 0,
+        "dataMin": 0
+      }
+    ]
+  },
+  {
+    "name": "RCV_BB",
+    "isWritable": true,
+    "address": 1000012,
+    "bitMaps": [
+      {
+        "name": "Gain_SPI",
+        "msb": 9,
+        "lsb": 6,
+        "dataType": "BIN",
+        "dataMax": 0,
+        "dataMin": 0
+      },
+      {
+        "name": "Offset_SPI",
+        "msb": 5,
+        "lsb": 0,
+        "dataType": "BIN",
+        "dataMax": 0,
+        "dataMin": 0
+      }
+    ]
+  },
+  {
+    "name": "RCV_RF1",
+    "isWritable": true,
+    "address": 1000012,
+    "bitMaps": [
+      {
+        "name": "Comparator Pad Mux",
+        "msb": 13,
+        "lsb": 13,
+        "dataType": "BIN",
+        "dataMax": 0,
+        "dataMin": 0
+      },
+      {
+        "name": "Timing Pad Mux",
+        "msb": 12,
+        "lsb": 12,
+        "dataType": "BIN",
+        "dataMax": 0,
+        "dataMin": 0
+      },
+      {
+        "name": "VCD0",
+        "msb": 11,
+        "lsb": 11,
+        "dataType": "BIN",
+        "dataMax": 0,
+        "dataMin": 0
+      },
+      {
+        "name": "VCD1",
+        "msb": 10,
+        "lsb": 10,
+        "dataType": "BIN",
+        "dataMax": 0,
+        "dataMin": 0
+      },
+      {
+        "name": "VCD2",
+        "msb": 9,
+        "lsb": 9,
+        "dataType": "BIN",
+        "dataMax": 0,
+        "dataMin": 0
+      },
+      {
+        "name": "LPF_EN",
+        "msb": 8,
+        "lsb": 8,
+        "dataType": "BIN",
+        "dataMax": 0,
+        "dataMin": 0
+      },
+      {
+        "name": "BB_IN_EN",
+        "msb": 7,
+        "lsb": 7,
+        "dataType": "BIN",
+        "dataMax": 0,
+        "dataMin": 0
+      },
+      {
+        "name": "BB_OUT_EN",
+        "msb": 6,
+        "lsb": 6,
+        "dataType": "BIN",
+        "dataMax": 0,
+        "dataMin": 0
+      },
+      {
+        "name": "CAP_5 through CAP_0",
+        "msb": 5,
+        "lsb": 0,
+        "dataType": "BIN",
+        "dataMax": 0,
+        "dataMin": 0
+      }
+    ]
+  },
+  {
+    "name": "RCV_RF2",
+    "isWritable": true,
+    "address": 1000012,
+    "bitMaps": [
+      {
+        "name": "FLOATING",
+        "msb": 15,
+        "lsb": 0,
+        "dataType": "BIN",
+        "dataMax": 0,
+        "dataMin": 0
+      }
+    ]
+  },
+  {
+    "name": "WRT_BB",
+    "isWritable": false,
+    "address": 1000012,
+    "bitMaps": [
+      {
+        "name": "FLOATING",
+        "msb": 15,
+        "lsb": 0,
+        "dataType": "BIN",
+        "dataMax": 0,
+        "dataMin": 0
+      }
+    ]
+  },
+  {
+    "name": "WRT_RF1",
+    "isWritable": false,
+    "address": 1000012,
+    "bitMaps": [
+      {
+        "name": "Comparator Pad Mux",
+        "msb": 13,
+        "lsb": 13,
+        "dataType": "BIN",
+        "dataMax": 0,
+        "dataMin": 0
+      },
+      {
+        "name": "Timing Pad Mux",
+        "msb": 12,
+        "lsb": 12,
+        "dataType": "BIN",
+        "dataMax": 0,
+        "dataMin": 0
+      },
+      {
+        "name": "VCD0",
+        "msb": 11,
+        "lsb": 11,
+        "dataType": "BIN",
+        "dataMax": 0,
+        "dataMin": 0
+      },
+      {
+        "name": "VCD1",
+        "msb": 10,
+        "lsb": 10,
+        "dataType": "BIN",
+        "dataMax": 0,
+        "dataMin": 0
+      },
+      {
+        "name": "VCD2",
+        "msb": 9,
+        "lsb": 9,
+        "dataType": "BIN",
+        "dataMax": 0,
+        "dataMin": 0
+      },
+      {
+        "name": "LPF_EN",
+        "msb": 8,
+        "lsb": 8,
+        "dataType": "BIN",
+        "dataMax": 0,
+        "dataMin": 0
+      },
+      {
+        "name": "BB_IN_EN",
+        "msb": 7,
+        "lsb": 7,
+        "dataType": "BIN",
+        "dataMax": 0,
+        "dataMin": 0
+      },
+      {
+        "name": "BB_OUT_EN",
+        "msb": 6,
+        "lsb": 6,
+        "dataType": "BIN",
+        "dataMax": 0,
+        "dataMin": 0
+      },
+      {
+        "name": "CAP_5 through CAP_0",
+        "msb": 5,
+        "lsb": 0,
+        "dataType": "BIN",
+        "dataMax": 0,
+        "dataMin": 0
+      }
+    ]
+  },
+  {
+    "name": "WRT_RF2",
+    "isWritable": false,
+    "address": 1000012,
+    "bitMaps": [
+      {
+        "name": "FLOATING",
+        "msb": 15,
+        "lsb": 0,
+        "dataType": "BIN",
+        "dataMax": 0,
+        "dataMin": 0
+      }
+    ]
+  },
+  {
+    "name": "WRT_AGOC",
+    "isWritable": false,
+    "address": 1000012,
+    "bitMaps": [
+      {
+        "name": "Boundary Flag",
+        "msb": 15,
+        "lsb": 15,
+        "dataType": "BIN",
+        "dataMax": 0,
+        "dataMin": 0
+      },
+      {
+        "name": "Bottom Comparator In",
+        "msb": 14,
+        "lsb": 14,
+        "dataType": "BIN",
+        "dataMax": 0,
+        "dataMin": 0
+      },
+      {
+        "name": "Top Comparator In",
+        "msb": 13,
+        "lsb": 13,
+        "dataType": "BIN",
+        "dataMax": 0,
+        "dataMin": 0
+      },
+      {
+        "name": "Bottom Comparator Offset",
+        "msb": 11,
+        "lsb": 6,
+        "dataType": "BIN",
+        "dataMax": 0,
+        "dataMin": 0
+      },
+      {
+        "name": "Top Comparator Offset",
+        "msb": 5,
+        "lsb": 0,
+        "dataType": "BIN",
+        "dataMax": 0,
+        "dataMin": 0
+      }
+    ]
+  },
+  {
+    "name": "WRT_COR1",
+    "isWritable": false,
+    "address": 1000012,
+    "bitMaps": [
+      {
+        "name": "Error1_15b_osx2",
+        "msb": 15,
+        "lsb": 12,
+        "dataType": "BIN",
+        "dataMax": 0,
+        "dataMin": 0
+      },
+      {
+        "name": "Error0_15b_osx2",
+        "msb": 11,
+        "lsb": 8,
+        "dataType": "BIN",
+        "dataMax": 0,
+        "dataMin": 0
+      },
+      {
+        "name": "Error1_8b",
+        "msb": 7,
+        "lsb": 4,
+        "dataType": "BIN",
+        "dataMax": 0,
+        "dataMin": 0
+      },
+      {
+        "name": "Error0_8b",
+        "msb": 3,
+        "lsb": 0,
+        "dataType": "BIN",
+        "dataMax": 0,
+        "dataMin": 0
+      }
+    ]
+  },
+  {
+    "name": "WRT_COR2",
+    "isWritable": false,
+    "address": 1000012,
+    "bitMaps": [
+      {
+        "name": "0",
+        "msb": 15,
+        "lsb": 15,
+        "dataType": "BIN",
+        "dataMax": 0,
+        "dataMin": 0
+      },
+      {
+        "name": "0",
+        "msb": 14,
+        "lsb": 14,
+        "dataType": "BIN",
+        "dataMax": 0,
+        "dataMin": 0
+      },
+      {
+        "name": "Error1_31b",
+        "msb": 13,
+        "lsb": 9,
+        "dataType": "BIN",
+        "dataMax": 0,
+        "dataMin": 0
+      },
+      {
+        "name": "Error0_31b",
+        "msb": 8,
+        "lsb": 4,
+        "dataType": "BIN",
+        "dataMax": 0,
+        "dataMin": 0
+      },
+      {
+        "name": "Error0_15b_osx1",
+        "msb": 3,
+        "lsb": 0,
+        "dataType": "BIN",
+        "dataMax": 0,
         "dataMin": 0
       }
     ]

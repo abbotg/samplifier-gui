@@ -1,7 +1,5 @@
 package nzero.samplifier.model;
 
-import nzero.samplifier.gui.basic.InvalidInputLengthException;
-
 /**
  * Mapping of certain bits in a register to a function
  */
@@ -39,26 +37,6 @@ public class BitMap {
         }
     }
 
-    public BitMap(String name,
-                  int msb,
-                  int lsb,
-                  DataType dataType,
-                  int maxVal,
-                  int minVal) {
-        this(name, msb, lsb, dataType, maxVal, minVal, 0);
-    }
-
-    public BitMap(String name, int msb, int lsb, DataType dataType) {
-        this.name = name;
-        this.msb = msb;
-        this.lsb = lsb;
-        this.dataType = dataType;
-
-        this.maxVal = 2 << getLength() - 1;
-        this.minVal = 0;
-        this.data = 0;
-    }
-
     public BitMap(BitMap other) {
         this.name = other.name;
         this.msb = other.msb;
@@ -67,12 +45,6 @@ public class BitMap {
         this.maxVal = other.maxVal;
         this.minVal = other.minVal;
         this.data = other.data;
-    }
-
-    // TODO: get rid of secondary constructors
-
-    public BitMap(String name, int msb, int lsb) {
-        this(name, msb, lsb, msb - lsb == 0 ? DataType.BOOL : DataType.BIN);
     }
 
     public String getName() {

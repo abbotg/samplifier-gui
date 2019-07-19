@@ -13,15 +13,17 @@ import java.awt.*;
  */
 public class RegisterPanel extends JPanel {
     private Register register;
+    private JTable table;
+    private AbstractTableModel tableModel;
 
     public RegisterPanel(Register register) {
         super(new GridLayout(1, 0));
         this.register = register;
 
-        AbstractTableModel tableModel = register.isWritable()
-                ? new WriteRegisterTableModel(register) : new ReadRegisterTableModel(register);
+        tableModel = register.isWritable()
+                ? new WriteRegisterTableModel(register) : new ReadRegisterTableModel(register); // TODO: should this be here
 
-        JTable table = new JTable(tableModel) {
+        table = new JTable(tableModel) {
             @Override
             public TableCellEditor getCellEditor(int row, int column) {
                 if (column == 2) {
@@ -58,4 +60,12 @@ public class RegisterPanel extends JPanel {
         add(scrollPane);
     }
 
+    public void updateRegisterData() {
+        tableModel.fireTableDataChanged();
+//        table.invalidate();
+    }
+
+    public Register getRegister() {
+        return register;
+    }
 }

@@ -127,7 +127,7 @@ public class Register {
      * @return
      */
     public String getBinaryString() {
-        return String.format("%"  + getBitWidth() + "s", Integer.toBinaryString(1));
+        return String.format("%"  + getBitWidth() + "s", Integer.toBinaryString(data)).replace(' ', '0');
     }
 
     @Override

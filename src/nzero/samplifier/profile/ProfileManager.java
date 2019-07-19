@@ -2,6 +2,7 @@ package nzero.samplifier.profile;
 
 import nzero.samplifier.model.Register;
 
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
@@ -9,6 +10,7 @@ import java.util.stream.Collectors;
 
 public class ProfileManager {
     private List<Profile> profiles;
+    private Profile defaultProfile;
 
 
     public ProfileManager() {
@@ -40,10 +42,15 @@ public class ProfileManager {
 
     private static void saveToPreferences(Profile profile) {
         String key = profile.getName();
-        String value = profile.getRegisterNames().stream().map(registerName -> registerName + ':' + profile.getRegisterData(registerName) + ';').collect(Collectors.joining());
+        String value = profile.getRegisterNames().stream().map(registerName -> registerName + ':' + profile.getRegisterBinaryString(registerName) + ';').collect(Collectors.joining());
+
+//        String key64 = Base64.getEncoder().encodeToString(key.getBytes(StandardCharsets.UTF_8));
+//        String value64 = Base64.getEncoder().encodeToString(value.getBytes(StandardCharsets.UTF_8));
 
         Preferences preferences = Preferences.userRoot().node("nzero/samplifier/profiles");
         preferences.put(key, value); // TODO: handle max length before this
+        System.out.println(key);
+        System.out.println(value);
     }
 
     /**
@@ -54,7 +61,12 @@ public class ProfileManager {
      * @param destRegs
      * @throws ProfileMismatchException if the profile is incompatible with the target registers.
      */
-    public void loadProfile(Profile profile, List<Register> destRegs) throws ProfileMismatchException {
+    public void loadProfile(String profileName, List<Register> destRegs) throws ProfileMismatchException {
+
+        if (!existsProfile(profileName)) {
+            throw new ProfileMismatchException();
+        }
+        Profile profile = getProfile(profileName);
 
         // Perform consistency check
         if (!areCompatible(profile, destRegs)) {
@@ -83,8 +95,16 @@ public class ProfileManager {
         return profiles.stream().map(Profile::getName).collect(Collectors.toCollection(() -> new ArrayList<>(profiles.size())));
     }
 
+    /**
+     * Creates profile, replaces it if it already exists
+     * @param name
+     * @param registers
+     */
     public void createProfile(String name, List<Register> registers) {
-        Profile profile = new Profile(name, deepCopy(registers)); // TODO: check for dup names? Propogate changed back to GUI?
+        if (existsProfile(name)) {
+            removeProfile(name);
+        }
+        Profile profile = new Profile(name, registers); // TODO: check for dup names? Propogate changed back to GUI?
         profiles.add(profile);
         saveToPreferences(profile);
     }
@@ -110,6 +130,17 @@ public class ProfileManager {
 
     private static List<Register> deepCopy(List<Register> sourceRegs) {
         return sourceRegs.stream().map(Register::new).collect(Collectors.toCollection(() -> new ArrayList<>(sourceRegs.size())));
+    }
+
+    public void setDefaultProfile(String name) {
+        //TODO: check if it exists?
+        defaultProfile = getProfile(name);
+        Preferences preferences = Preferences.userRoot().node("nzero/samplifier/profiles/default");
+        preferences.put("defaultProfileName", name);
+    }
+
+    public Optional<String> getDefaultProfile() {
+        return Optional.ofNullable(defaultProfile == null ? null : defaultProfile.getName());
     }
 
 }

@@ -16,18 +16,18 @@ public class RegisterTest {
     @Before
     public void setUp() throws Exception {
         List<BitMap> bitMaps = new ArrayList<>();
-        bitMaps.add(new BitMap("Gain Reset", 13, 10));
-        bitMaps.add(new BitMap("Offset Reset", 9, 4));
-        bitMaps.add(new BitMap("Gain Mux",3,3));
-        bitMaps.add(new BitMap("Gain Enable", 2,2));
-        bitMaps.add(new BitMap("Offset Enable", 1, 1));
-        bitMaps.add(new BitMap("AGOC", 0, 0));
+//        bitMaps.add(new BitMap("Gain Reset", 13, 10));
+//        bitMaps.add(new BitMap("Offset Reset", 9, 4));
+//        bitMaps.add(new BitMap("Gain Mux",3,3));
+//        bitMaps.add(new BitMap("Gain Enable", 2,2));
+//        bitMaps.add(new BitMap("Offset Enable", 1, 1));
+//        bitMaps.add(new BitMap("AGOC", 0, 0));
 
         List<BitMap> bitMaps1 = new ArrayList<>();
-        bitMaps1.add(new BitMap("Stuff", 15,10));
-        bitMaps1.add(new BitMap("Things", 9,8));
-        bitMaps1.add(new BitMap("Thing", 7,7));
-        bitMaps1.add(new BitMap("Items",6,0));
+//        bitMaps1.add(new BitMap("Stuff", 15,10));
+//        bitMaps1.add(new BitMap("Things", 9,8));
+//        bitMaps1.add(new BitMap("Thing", 7,7));
+//        bitMaps1.add(new BitMap("Items",6,0));
 
         register = new Register("RCV_AGOC5", 0, true, bitMaps);
         register1 = new Register("TestReg", 0, false, bitMaps1);

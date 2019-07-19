@@ -29,7 +29,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package nzero.samplifier.gui;
+package nzero.samplifier.test;
 
 
 /*

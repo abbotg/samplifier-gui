@@ -82,11 +82,11 @@ public abstract class AbstractRegisterTableModel extends AbstractTableModel {
      * then the last column would contain text ("true"/"false"),
      * rather than a check box.
      */
-    @Override
-    public Class getColumnClass(int c) {
-        return getValueAt(0, c).getClass();
+//    @Override
+//    public Class getColumnClass(int c) {
+//        return getValueAt(0, c).getClass();
 //        return Boolean.class;
-    }
+//    }
 
     void printDebugData() {
         int numRows = getRowCount();
@@ -101,7 +101,7 @@ public abstract class AbstractRegisterTableModel extends AbstractTableModel {
         }
         System.out.println("--------------------------");
         System.out.print("Register data: ");
-        System.out.println(Integer.toBinaryString(register.getData()));
+        System.out.println(register.getBinaryString());
         System.out.println("--------------------------");
     }
 

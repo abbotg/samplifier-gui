@@ -1,6 +1,7 @@
 package nzero.samplifier.api;
 
 public class SamplifierAPI {
+
     private SamplifierAPI() {
     }
 

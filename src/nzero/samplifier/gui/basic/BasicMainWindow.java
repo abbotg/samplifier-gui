@@ -1,8 +1,8 @@
-package nzero.samplifier.gui;
+package nzero.samplifier.gui.basic;
 
-import nzero.samplifier.gui.basic.RegisterPanel;
+import nzero.samplifier.gui.GUICommon;
+import nzero.samplifier.gui.SamplifierMainWindow;
 import nzero.samplifier.model.Register;
-import nzero.samplifier.profile.ProfileManager;
 
 import javax.swing.*;
 import java.awt.*;
@@ -10,9 +10,7 @@ import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainWindow {
-    private List<Register> registers;
-    private JFrame frame;
+public class BasicMainWindow extends JFrame implements SamplifierMainWindow {
     private JPanel rootPanel; // root below the JFrame
     private final JPanel writeRegTabbedPane;
     //    private final JTabbedPane writeRegTabbedPane;
@@ -22,12 +20,13 @@ public class MainWindow {
 
     private JButton writeButton, writeAllButton, readButton, readAllButton, continuousReadButton;
 
-    private JMenu loadProfilesMenu;
-    private ProfileManager profileManager;
+    private List<RegisterPanel> writeRegisterPanels, readRegisterPanels; // For updating the table data on profile load
+    private GUICommon common;
 
 
-    public MainWindow(List<Register> registers) {
-        this.registers = registers;
+    public BasicMainWindow(GUICommon common) {
+        super(GUICommon.WINDOW_NAME);
+        this.common = common;
 
         //////////////////////
         /// Create buttons ///
@@ -54,13 +53,18 @@ public class MainWindow {
         // and add them to the writeRegTabbedPane. The cards (registers) are identified
         // by their name (a string)
         List<String> writeRegisterNames = new ArrayList<>();
+        writeRegisterPanels = new ArrayList<>(); // TODO: can this and above be consolidated
+        readRegisterPanels = new ArrayList<>();
 
-        for (Register register : registers) {
+        for (Register register : common.registers()) {
+            RegisterPanel registerPanel = new RegisterPanel(register);
             if (register.isWritable()) {
-                writeRegTabbedPane.add(new RegisterPanel(register), register.getName()); // this is a deep call
+                writeRegisterPanels.add(registerPanel);
+                writeRegTabbedPane.add(registerPanel, register.getName()); // this is a deep call
                 writeRegisterNames.add(register.getName()); // TODO: still need to handle dup names
             } else {
-                readRegTabbedPane.add(new RegisterPanel(register), register.getName());
+                readRegTabbedPane.add(registerPanel, register.getName());
+                readRegisterPanels.add(registerPanel);
             }
         }
 
@@ -108,108 +112,60 @@ public class MainWindow {
         rootPanel.add(readContainer);
 
         // Configure the JFrame
-        frame = new JFrame("Samplifier GUI");
-        frame.setJMenuBar(createMenuBar());
-        frame.add(rootPanel);
-        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        frame.setLocationRelativeTo(null);
+        setJMenuBar(common.createMenuBar());
+        add(rootPanel);
+        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
 
         configureActionListeners();
-        updateProfilesMenu();
+        common.updateProfilesMenu();
 
 
         // Called last
-        frame.pack();
-        frame.setVisible(true);
+        pack();
+        setLocationRelativeTo(null);
+        setVisible(true);
+
+
 
     }
 
     private void configureActionListeners() {
-        writeButton.addActionListener(e -> {
-
-        });
-    }
-
-    private JMenuBar createMenuBar() {
-        JMenuBar menuBar;
-        JMenu connectionMenu, viewMenu, profileMenu, helpMenu;
-        JRadioButtonMenuItem radioButtonMenuItem;
-        JMenuItem menuItem;
-
-        // Create menu bar
-        menuBar = new JMenuBar();
-
-        /// View Menu ///
-        viewMenu = new JMenu("View");
-//        menuBar.add(viewMenu);
-
-        ButtonGroup buttonGroup = new ButtonGroup();
-
-        radioButtonMenuItem = new JRadioButtonMenuItem("Basic");
-        radioButtonMenuItem.setSelected(true);
-        buttonGroup.add(radioButtonMenuItem);
-        viewMenu.add(radioButtonMenuItem);
-
-        radioButtonMenuItem = new JRadioButtonMenuItem("Advanced");
-        radioButtonMenuItem.setSelected(false);
-        buttonGroup.add(radioButtonMenuItem);
-        viewMenu.add(radioButtonMenuItem);
-
-        /// Profile Menu ///
-        profileMenu = new JMenu("Profile");
-
-        menuItem = new JMenuItem("Save as...");
-        menuItem.addActionListener(this::profileSaveAsButton);
-        profileMenu.add(menuItem);
-
-        loadProfilesMenu = new JMenu("Load");
-        profileMenu.add(loadProfilesMenu);
-
-        menuItem = new JMenuItem("Load default");
-        menuItem.addActionListener(this::profileLoadDefaultButton);
-        profileMenu.add(menuItem);
-
-        menuItem = new JMenuItem("Set default...");
-        menuItem.addActionListener(this::profileSetDefaultButton);
-        profileMenu.add(menuItem);
-
-
-        // placeholder
-        connectionMenu = new JMenu("Connection");
-
-        helpMenu = new JMenu("Help");
-
-        menuBar.add(connectionMenu);
-        menuBar.add(viewMenu);
-        menuBar.add(profileMenu);
-        menuBar.add(helpMenu);
-
-
-        return menuBar;
-    }
-
-    private void profileSaveAsButton(ActionEvent e) {
-        profileManager.createProfile("" + Math.random(), registers); // todo
-        updateProfilesMenu();
-
-    }
-
-    private void profileLoadDefaultButton(ActionEvent e) {
-        profileManager.removeProfile();
-    }
-
-    private void profileSetDefaultButton(ActionEvent e) {
-
-    }
-
-    public void updateProfilesMenu() {
-        if (profileManager == null) {
-            profileManager = new ProfileManager();
-        }
-        List<String> profiles = profileManager.getProfiles();
-        profiles.stream().map(JMenu::new).map(menu -> loadProfilesMenu.add(menu));
+        writeButton.addActionListener(this::writeButton);
+        writeAllButton.addActionListener(this::writeAllButton);
     }
 
 
+
+
+
+    public Register getCurrentWriteRegister() {
+        String name = String.valueOf(comboBox.getSelectedItem());
+        return common.registers().stream().filter(register -> register.getName().equals(name)).findFirst().get();
+    }
+
+    public RegisterPanel getCurrentWriteRegisterPanel() {
+        String name = String.valueOf(comboBox.getSelectedItem());
+        return writeRegisterPanels.stream().filter(panel -> panel.getRegister().getName().equals(name)).findFirst().orElse(null);
+    }
+
+    private void writeButton(ActionEvent e) {
+        Register current = getCurrentWriteRegister();
+        common.write(current);
+    }
+
+    private void writeAllButton(ActionEvent e) {
+        common.writeAll();
+    }
+
+
+    @Override
+    public JFrame getFrame() {
+        return this;
+    }
+
+    @Override
+    public void fireWriteRegistersDataChange() {
+        getCurrentWriteRegisterPanel().updateRegisterData();
+    }
 }

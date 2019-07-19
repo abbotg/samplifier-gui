@@ -19,12 +19,12 @@ public class ProfileManagerTest {
     @Before
     public void setUp() throws Exception {
         List<BitMap> bitMaps0 = new ArrayList<>();
-        bitMaps0.add(new BitMap("Gain Reset", 13, 10));
-        bitMaps0.add(new BitMap("Offset Reset", 9, 4));
-        bitMaps0.add(new BitMap("Gain Mux",3,3));
-        bitMaps0.add(new BitMap("Gain Enable", 2,2));
-        bitMaps0.add(new BitMap("Offset Enable", 1, 1));
-        bitMaps0.add(new BitMap("AGOC", 0, 0));
+//        bitMaps0.add(new BitMap("Gain Reset", 13, 10));
+//        bitMaps0.add(new BitMap("Offset Reset", 9, 4));
+//        bitMaps0.add(new BitMap("Gain Mux",3,3));
+//        bitMaps0.add(new BitMap("Gain Enable", 2,2));
+//        bitMaps0.add(new BitMap("Offset Enable", 1, 1));
+//        bitMaps0.add(new BitMap("AGOC", 0, 0));
 
         List<BitMap> bitMaps1 = new ArrayList<>();
         bitMaps1.add(new BitMap("Gain Reset", 13, 10, DataType.BIN, Integer.MAX_VALUE, Integer.MIN_VALUE, 9));

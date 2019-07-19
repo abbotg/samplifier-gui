@@ -1,5 +1,6 @@
 package nzero.samplifier.gui.basic;
 
+import nzero.samplifier.gui.InvalidInputLengthException;
 import nzero.samplifier.model.BitMap;
 import nzero.samplifier.model.DataType;
 import nzero.samplifier.model.Register;

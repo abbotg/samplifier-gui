@@ -1,4 +1,4 @@
-package nzero.samplifier.gui.basic;
+package nzero.samplifier.gui;
 
 public class InvalidInputLengthException extends Exception {
     public InvalidInputLengthException() {

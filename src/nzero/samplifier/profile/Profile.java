@@ -97,6 +97,10 @@ public class Profile {
         return hasRegister(registerName) ? Integer.parseUnsignedInt(registerData.get(registerName), 2) : -1;
     }
 
+    String getRegisterBinaryString(String registerName) {
+        return hasRegister(registerName) ? registerData.get(registerName) : ""; // todo
+    }
+
     boolean hasRegister(String registerName) {
         return registerData.containsKey(registerName);
     }

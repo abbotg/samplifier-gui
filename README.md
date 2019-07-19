@@ -76,3 +76,11 @@ Feature (Goal)
 - USB communication b/t GUI and Arduino (Jul 12)
 - Profiles (Jul 14)
 - Extra features: continuous read, manual register entry mode, documentation over the next few days
+
+## Advanced mode columns
+
+### Options
+
+- Reg name
+- Data field
+- Is readable/writable

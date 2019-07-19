@@ -11,6 +11,8 @@ import java.util.List;
 
 public class RegMapBootstrapper {
 
+    private static final int DEFAULT_DATA = 0;
+
     private RegMapBootstrapper() {}
 
     public static List<Register> buildFromFile(String filename) {
@@ -32,7 +34,7 @@ public class RegMapBootstrapper {
                         bitMap.getInt("lsb"),
                         DataType.valueOf(bitMap.getString("dataType")),
                         bitMap.getInt("dataMax"),
-                        bitMap.getInt("dataMin")));
+                        bitMap.getInt("dataMin"), DEFAULT_DATA));
             }
             registers.add(new Register(
                     registerObject.getString("name"),

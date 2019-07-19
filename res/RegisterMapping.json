@@ -199,31 +199,31 @@
     "bitMaps": [
       {
         "name": "cor_sel",
-        "msb": 14,
-        "lsb": 10,
+        "msb": 9,
+        "lsb": 8,
         "dataType": "BIN",
         "dataMax": 0,
         "dataMin": 0
       },
       {
         "name": "AGOC_sel",
-        "msb": 9,
-        "lsb": 0,
+        "msb": 7,
+        "lsb": 6,
         "dataType": "BIN",
         "dataMax": 0,
         "dataMin": 0
       },
       {
         "name": "en_cor_sel",
-        "msb": 14,
-        "lsb": 10,
+        "msb": 5,
+        "lsb": 5,
         "dataType": "BIN",
         "dataMax": 0,
         "dataMin": 0
       },
       {
         "name": "Correlator Error Threshold (4:0 for 31 bit, 3:0 otherwise)",
-        "msb": 9,
+        "msb": 4,
         "lsb": 0,
         "dataType": "BIN",
         "dataMax": 0,

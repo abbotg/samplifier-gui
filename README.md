@@ -84,3 +84,32 @@ Feature (Goal)
 - Reg name
 - Data field
 - Is readable/writable
+
+
+## USB Communication protocol
+
+First byte is op code
+
+### Operations (to Arduino)
+
+- Write (single) (4 bytes)
+    - 0: op code
+    - 1: address
+    - 2-3: data
+- Read (single) (4 bytes)
+    - 0: op code
+    - 1: address
+    - 2-3: blank
+    
+
+### Callbacks (from Arduino)
+
+- Read (single) (4 bytes)
+    - 0: op code
+    - 1: address
+    - 2-3: data
+- Write (single)
+    - 0: op code
+    - 1: address
+    - 2: 1 or 0, for success or failure
+    - 3: blank

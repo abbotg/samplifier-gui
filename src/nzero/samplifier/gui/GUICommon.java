@@ -1,5 +1,7 @@
 package nzero.samplifier.gui;
 
+import nzero.samplifier.api.SamplifierAPI;
+import nzero.samplifier.api.SamplifierConnection;
 import nzero.samplifier.gui.advanced.AdvancedMainWindow;
 import nzero.samplifier.gui.basic.BasicMainWindow;
 import nzero.samplifier.model.Register;
@@ -8,6 +10,7 @@ import nzero.samplifier.profile.ProfileMismatchException;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -16,10 +19,12 @@ import java.util.stream.Collectors;
 public class GUICommon {
     private List<Register> registers;
     private ProfileManager profileManager;
-    private JMenu loadProfilesMenu;
+    private JMenu loadProfilesMenu, connectionMenu;
+    private JMenuItem connectionStatus, connectionButton;
     private JRadioButtonMenuItem basicModeButton, advancedModeButton;
     private GUIMode mode;
     private SamplifierMainWindow activeWindow;
+    private SamplifierConnection connection;
 
     public static final String WINDOW_NAME = "Samplifier GUI";
 
@@ -57,12 +62,25 @@ public class GUICommon {
 
     public JMenuBar createMenuBar() {
         JMenuBar menuBar;
-        JMenu connectionMenu, viewMenu, profileMenu, helpMenu;
+        JMenu viewMenu, profileMenu, helpMenu;
         JRadioButtonMenuItem radioButtonMenuItem;
         JMenuItem menuItem;
 
         // Create menu bar
         menuBar = new JMenuBar();
+
+        /// Connection menu ///
+        connectionMenu = new JMenu("Connection");
+
+        connectionStatus = new JMenuItem("Status: Disconnected");
+        connectionStatus.setEnabled(false);
+        connectionMenu.add(connectionStatus);
+
+        connectionButton = new JMenuItem("Connect");
+        connectionButton.addActionListener(this::connectionToggleButton);
+        connectionMenu.add(connectionButton);
+
+        updateConnectionMenu();
 
         /// View Menu ///
         viewMenu = new JMenu("View");
@@ -71,7 +89,7 @@ public class GUICommon {
         ButtonGroup buttonGroup = new ButtonGroup();
 
         basicModeButton = new JRadioButtonMenuItem("Basic");
-        basicModeButton.addActionListener(e -> setWindow(GUIMode.BASIC));
+        basicModeButton.addActionListener(e -> GUICommon.this.setWindow(GUIMode.BASIC));
         basicModeButton.setSelected(true);
         buttonGroup.add(basicModeButton);
         viewMenu.add(basicModeButton);
@@ -102,8 +120,6 @@ public class GUICommon {
 
 
         // placeholder
-        connectionMenu = new JMenu("Connection");
-
         helpMenu = new JMenu("Help");
 
         menuBar.add(connectionMenu);
@@ -203,6 +219,49 @@ public class GUICommon {
             loadProfilesMenu.add(profileMenuItem);
             profileMenuItem.addActionListener(e -> loadProfile(profile));
         }
+    }
+
+    public void updateConnectionMenu() {
+        if (connection != null && connection.isConnected()) {
+            connectionStatus.setText("Status: Connected");
+            connectionButton.setText("Disconnect");
+        } else {
+            connectionStatus.setText("Status: Disconnected");
+            connectionButton.setText("Connect");
+        }
+    }
+
+    public void connectionToggleButton(ActionEvent e) {
+        if (connection == null) {
+            String input;
+            boolean valid;
+            do {
+                input = JOptionPane.showInputDialog(getActiveFrame(),
+                        "Enter COM port or Linux dev location",
+                        "/dev/ttyACM0"); // TODO: scan for existing
+                if (input == null) {
+                    return;
+                } else if (input.isEmpty()) {
+                    JOptionPane.showMessageDialog(getActiveFrame(), "Input cannot be empty");
+                    valid = false;
+                } else {
+                    if (SamplifierAPI.isValidPort(input)) {
+                        connection = SamplifierAPI.createConnection(input);
+                        valid = true;
+                    } else {
+                        valid = false;
+                        JOptionPane.showMessageDialog(getActiveFrame(),
+                                "Invalid port",
+                                "Error",
+                                JOptionPane.ERROR_MESSAGE);
+                    }
+                }
+            } while (!valid);
+        } else { // Connection already exists
+            connection.disconnect();
+            connection = null;
+        }
+        updateConnectionMenu();
     }
 
     public void write(Register register) {

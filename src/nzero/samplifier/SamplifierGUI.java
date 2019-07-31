@@ -59,6 +59,7 @@ public class SamplifierGUI {
         //UIManager.put("swing.boldMetal", Boolean.FALSE);
         //Schedule a job for the event-dispatching thread:
         //creating and showing this application's GUI.
+        // TODO: force use metal
 
         JWindow window = splash();
         pause(500);

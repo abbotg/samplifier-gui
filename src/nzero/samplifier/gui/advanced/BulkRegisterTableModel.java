@@ -36,7 +36,11 @@ public class BulkRegisterTableModel extends AbstractTableModel {
             case 0:
                 return register.getName();
             case 1:
-                return register.isWritable() ? "Write" : "Read";
+                switch (register.getRegisterType()) {
+                    case READ: return "Read";
+                    case WRITE: return "Write";
+                    case READ_WRITE: return "Read/Write";
+                }
             case 2:
                 return Integer.toString(register.getBitWidth());
             case 3:
@@ -48,7 +52,7 @@ public class BulkRegisterTableModel extends AbstractTableModel {
 
     @Override
     public boolean isCellEditable(int rowIndex, int columnIndex) {
-        return columnIndex == 3;
+        return columnIndex == 3 && registers.get(rowIndex).isWritable();
     }
 
     @Override

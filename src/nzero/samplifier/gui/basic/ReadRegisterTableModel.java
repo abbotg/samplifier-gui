@@ -5,6 +5,7 @@ import nzero.samplifier.model.Register;
 /**
  * "Basic" mode
  */
+@Deprecated
 public class ReadRegisterTableModel extends AbstractRegisterTableModel {
     public static boolean DEBUG = true;
 

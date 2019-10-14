@@ -68,7 +68,7 @@ public class SamplifierConnection {
 
         /*
          * Implementation details
-         * @see README.md
+         * @see development.md
          */
         int address, val;
         try {

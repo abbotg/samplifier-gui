@@ -1,0 +1,908 @@
+[
+  {
+    "name": "WR_MS1",
+    "isWritable": true,
+    "isReadable": false,
+    "length" : 16,
+    "address": 2,
+    "bitMaps": [
+      {
+        "name": "ADC Delay Select",
+        "msb": 15,
+        "lsb": 15,
+        "dataType": "BOOL"
+      },
+      {
+        "name": "ADC DAC Select",
+        "msb": 14,
+        "lsb": 14,
+        "dataType": "BOOL"
+      },
+      {
+        "name": "LPF Switch",
+        "msb": 13,
+        "lsb": 13,
+        "dataType": "BOOL"
+      },
+      {
+        "name": "ADC Reset",
+        "msb": 12,
+        "lsb": 12,
+        "dataType": "BOOL"
+      },
+      {
+        "name": "ED Gain",
+        "msb": 11,
+        "lsb": 10,
+        "dataType": "DEC"
+      },
+      {
+        "name": "C_IF[2]",
+        "msb": 9,
+        "lsb": 9,
+        "dataType": "BOOL"
+      },
+      {
+        "name": "C_IF[0]",
+        "msb": 8,
+        "lsb": 8,
+        "dataType": "BOOL"
+      },
+      {
+        "name": "C_IF[1]",
+        "msb": 7,
+        "lsb": 7,
+        "dataType": "BOOL"
+      },
+      {
+        "name": "C_IF[3]",
+        "msb": 6,
+        "lsb": 6,
+        "dataType": "BOOL"
+      },
+      {
+        "name": "C_IF[4]",
+        "msb": 5,
+        "lsb": 5,
+        "dataType": "BOOL"
+      },
+      {
+        "name": "C_BB[4]",
+        "msb": 4,
+        "lsb": 4,
+        "dataType": "BOOL"
+      },
+      {
+        "name": "C_BB[1]",
+        "msb": 3,
+        "lsb": 3,
+        "dataType": "BOOL"
+      },
+      {
+        "name": "C_BB[2]",
+        "msb": 2,
+        "lsb": 2,
+        "dataType": "BOOL"
+      },
+      {
+        "name": "C_BB[0]",
+        "msb": 1,
+        "lsb": 1,
+        "dataType": "BOOL"
+      },
+      {
+        "name": "C_BB[3]",
+        "msb": 0,
+        "lsb": 0,
+        "dataType": "BOOL"
+      }
+    ]
+  },
+  {
+    "name": "WR_AGOC1",
+    "length" : 16,
+    "isWritable": true,
+    "isReadable": false,
+    "address": 3,
+    "bitMaps": [
+      {
+        "name": "Thresh Fine 1s",
+        "msb": 15,
+        "lsb": 10,
+        "dataType": "DEC"
+      },
+      {
+        "name": "Window Size",
+        "msb": 9,
+        "lsb": 0,
+        "dataType": "DEC"
+      }
+    ]
+  },
+  {
+    "name": "WR_AGOC2",
+    "length" : 16,
+    "isWritable": true,
+    "isReadable": false,
+    "address": 4,
+    "bitMaps": [
+      {
+        "name": "Correlator Control",
+        "msb": 15,
+        "lsb": 15,
+        "dataType": "BOOL"
+      },
+      {
+        "name": "Thresh Seq 1s",
+        "msb": 14,
+        "lsb": 8,
+        "dataType": "DEC"
+      },
+      {
+        "name": "Thresh Mod 1s",
+        "msb": 7,
+        "lsb": 0,
+        "dataType": "DEC"
+      }
+    ]
+  },
+  {
+    "name": "WR_AGOC3",
+    "length" : 16,
+    "isWritable": true,
+    "isReadable": false,
+    "address": 4,
+    "bitMaps": [
+      {
+        "name": "Wakeup Offset Reset",
+        "msb": 15,
+        "lsb": 15,
+        "dataType": "BOOL"
+      },
+      {
+        "name": "Boundary Flag Thresh",
+        "msb": 14,
+        "lsb": 10,
+        "dataType": "DEC"
+      },
+      {
+        "name": "Thresh Seq 0s",
+        "msb": 9,
+        "lsb": 0,
+        "dataType": "DEC"
+      }
+    ]
+  },
+  {
+    "name": "WR_AGOC4",
+    "length" : 16,
+    "isWritable": true,
+    "isReadable": false,
+    "address": 4,
+    "bitMaps": [
+      {
+        "name": "Gain Enable",
+        "msb": 15,
+        "lsb": 15,
+        "dataType": "BOOL"
+      },
+      {
+        "name": "Offset Enable",
+        "msb": 14,
+        "lsb": 14,
+        "dataType": "BOOL"
+      },
+      {
+        "name": "AGOC Enable",
+        "msb": 13,
+        "lsb": 13,
+        "dataType": "BOOL"
+      },
+      {
+        "name": "AGOC Reset",
+        "msb": 12,
+        "lsb": 12,
+        "dataType": "BOOL"
+      },
+      {
+        "name": "Lower Gain Limit",
+        "msb": 11,
+        "lsb": 8,
+        "dataType": "DEC"
+      },
+      {
+        "name": "Upper Gain Limit",
+        "msb": 7,
+        "lsb": 4,
+        "dataType": "DEC"
+      },
+      {
+        "name": "Gain Reset",
+        "msb": 3,
+        "lsb": 0,
+        "dataType": "DEC"
+      }
+    ]
+  },
+  {
+    "name": "WR_AGOC5",
+    "length" : 16,
+    "isWritable": true,
+    "isReadable": false,
+    "address": 4,
+    "bitMaps": [
+      {
+        "name": "Bottom Threshold",
+        "msb": 11,
+        "lsb": 6,
+        "dataType": "DEC"
+      },
+      {
+        "name": "Top Threshold",
+        "msb": 5,
+        "lsb": 0,
+        "dataType": "DEC"
+      }
+    ]
+  },
+  {
+    "name": "WR_RF1",
+    "length" : 16,
+    "isWritable": true,
+    "isReadable": false,
+    "address": 8,
+    "bitMaps": [
+      {
+        "name": "OBS[0]",
+        "msb": 10,
+        "lsb": 10,
+        "dataType": "BOOL"
+      },
+      {
+        "name": "Bypass Switch",
+        "msb": 9,
+        "lsb": 9,
+        "dataType": "BOOL"
+      },
+      {
+        "name": "OBS[2]",
+        "msb": 5,
+        "lsb": 5,
+        "dataType": "BOOL"
+      },
+      {
+        "name": "OBS[1]",
+        "msb": 4,
+        "lsb": 4,
+        "dataType": "BOOL"
+      },
+      {
+        "name": "OBS[3]",
+        "msb": 3,
+        "lsb": 3,
+        "dataType": "BOOL"
+      },
+      {
+        "name": "VCD0[0:2]",
+        "msb": 2,
+        "lsb": 0,
+        "dataType": "BIN"
+      }
+    ]
+  },
+  {
+    "name": "WR_TMG1",
+    "length" : 16,
+    "isWritable": true,
+    "isReadable": false,
+    "address": 9,
+    "bitMaps": [
+      {
+        "name": "One Start Thresh [3:0]",
+        "msb": 15,
+        "lsb": 12,
+        "dataType": "DEC"
+      },
+      {
+        "name": "Slow Clock Thresh",
+        "msb": 11,
+        "lsb": 0,
+        "dataType": "DEC"
+      }
+    ]
+  },
+  {
+    "name": "WR_TMG2",
+    "length" : 16,
+    "isWritable": true,
+    "isReadable": false,
+    "address": 10,
+    "bitMaps": [
+      {
+        "name": "One End Thresh [7:0]",
+        "msb": 15,
+        "lsb": 8,
+        "dataType": "DEC"
+      },
+      {
+        "name": "One Start Thresh [11:4]",
+        "msb": 7,
+        "lsb": 0,
+        "dataType": "DEC"
+      }
+    ]
+  },
+  {
+    "name": "WR_TMG3",
+    "length" : 16,
+    "isWritable": true,
+    "isReadable": false,
+    "address": 10,
+    "bitMaps": [
+      {
+        "name": "Two Start Thresh",
+        "msb": 15,
+        "lsb": 4,
+        "dataType": "DEC"
+      },
+      {
+        "name": "One End Thresh [3:0]",
+        "msb": 3,
+        "lsb": 0,
+        "dataType": "DEC"
+      }
+    ]
+  },
+  {
+    "name": "WR_TMG4",
+    "length" : 16,
+    "isWritable": true,
+    "isReadable": false,
+    "address": 9,
+    "bitMaps": [
+      {
+        "name": "Three Start Thresh [3:0]",
+        "msb": 15,
+        "lsb": 12,
+        "dataType": "DEC"
+      },
+      {
+        "name": "Two End Thresh",
+        "msb": 11,
+        "lsb": 0,
+        "dataType": "DEC"
+      }
+    ]
+  },
+  {
+    "name": "WR_TMG5",
+    "length" : 16,
+    "isWritable": true,
+    "isReadable": false,
+    "address": 10,
+    "bitMaps": [
+      {
+        "name": "Three End Thresh [7:0]",
+        "msb": 15,
+        "lsb": 8,
+        "dataType": "DEC"
+      },
+      {
+        "name": "Three Start Thresh [11:4]",
+        "msb": 7,
+        "lsb": 0,
+        "dataType": "DEC"
+      }
+    ]
+  },
+  {
+    "name": "WR_TMG6",
+    "length" : 16,
+    "isWritable": true,
+    "isReadable": false,
+    "address": 10,
+    "bitMaps": [
+      {
+        "name": "Four Start Thresh",
+        "msb": 15,
+        "lsb": 4,
+        "dataType": "DEC"
+      },
+      {
+        "name": "Three End Thresh [3:0]",
+        "msb": 3,
+        "lsb": 0,
+        "dataType": "DEC"
+      }
+    ]
+  },
+  {
+    "name": "WR_TMG7",
+    "length" : 16,
+    "isWritable": true,
+    "isReadable": false,
+    "address": 9,
+    "bitMaps": [
+      {
+        "name": "Five Start Thresh [3:0]",
+        "msb": 15,
+        "lsb": 12,
+        "dataType": "DEC"
+      },
+      {
+        "name": "Four End Thresh",
+        "msb": 11,
+        "lsb": 0,
+        "dataType": "DEC"
+      }
+    ]
+  },
+  {
+    "name": "WR_TMG8",
+    "length" : 16,
+    "isWritable": true,
+    "isReadable": false,
+    "address": 10,
+    "bitMaps": [
+      {
+        "name": "Five End Thresh [7:0]",
+        "msb": 15,
+        "lsb": 8,
+        "dataType": "DEC"
+      },
+      {
+        "name": "Five Start Thresh [11:4]",
+        "msb": 7,
+        "lsb": 0,
+        "dataType": "DEC"
+      }
+    ]
+  },
+  {
+    "name": "WR_TMG9",
+    "length" : 16,
+    "isWritable": true,
+    "isReadable": false,
+    "address": 10,
+    "bitMaps": [
+      {
+        "name": "Six Start Thresh",
+        "msb": 15,
+        "lsb": 4,
+        "dataType": "DEC"
+      },
+      {
+        "name": "Five End Thresh [3:0]",
+        "msb": 3,
+        "lsb": 0,
+        "dataType": "DEC"
+      }
+    ]
+  },
+  {
+    "name": "WR_TMG10",
+    "length" : 16,
+    "isWritable": true,
+    "isReadable": false,
+    "address": 9,
+    "bitMaps": [
+      {
+        "name": "Six End Thresh",
+        "msb": 11,
+        "lsb": 0,
+        "dataType": "DEC"
+      }
+    ]
+  },
+  {
+    "name": "WR_TMG11",
+    "length" : 16,
+    "isWritable": true,
+    "isReadable": false,
+    "address": 9,
+    "bitMaps": [
+      {
+        "name": "Timing Reset",
+        "msb": 12,
+        "lsb": 12,
+        "dataType": "BOOL"
+      },
+      {
+        "name": "Timing Direction",
+        "msb": 11,
+        "lsb": 6,
+        "dataType": "BIN"
+      },
+      {
+        "name": "Timing Select",
+        "msb": 5,
+        "lsb": 0,
+        "dataType": "BIN"
+      }
+    ]
+  },
+  {
+    "name": "WR_COR1",
+    "length" : 16,
+    "isWritable": true,
+    "isReadable": false,
+    "address": 9,
+    "bitMaps": [
+      {
+        "name": "Correlator Reference Data [15:0]",
+        "msb": 15,
+        "lsb": 0,
+        "dataType": "BIN"
+      }
+    ]
+  },
+  {
+    "name": "WR_COR2",
+    "length" : 16,
+    "isWritable": true,
+    "isReadable": false,
+    "address": 9,
+    "bitMaps": [
+      {
+        "name": "Correlator Reference Data [30:16]",
+        "msb": 14,
+        "lsb": 0,
+        "dataType": "BIN"
+      }
+    ]
+  },
+  {
+    "name": "WR_COR3",
+    "length" : 16,
+    "isWritable": true,
+    "isReadable": false,
+    "address": 9,
+    "bitMaps": [
+      {
+        "name": "Correlator Input Select",
+        "msb": 7,
+        "lsb": 7,
+        "dataType": "BOOL"
+      },
+      {
+        "name": "Correlator Reset Select",
+        "msb": 6,
+        "lsb": 6,
+        "dataType": "BOOL"
+      },
+      {
+        "name": "Correlator Enable",
+        "msb": 5,
+        "lsb": 5,
+        "dataType": "BOOL"
+      },
+      {
+        "name": "Correlator Error Threshold",
+        "msb": 4,
+        "lsb": 0,
+        "dataType": "DEC"
+      }
+    ]
+  },
+  {
+    "name": "WR_BB1",
+    "length" : 16,
+    "isWritable": true,
+    "isReadable": false,
+    "address": 9,
+    "bitMaps": [
+      {
+        "name": "IF SPI Gain [2:0]",
+        "msb": 12,
+        "lsb": 10,
+        "dataType": "DEC"
+      },
+      {
+        "name": "BB SPI Gain [2:0]",
+        "msb": 9,
+        "lsb": 7,
+        "dataType": "DEC"
+      },
+      {
+        "name": "ADC Manual Threshold",
+        "msb": 6,
+        "lsb": 1,
+        "dataType": "DEC"
+      },
+      {
+        "name": "Gain Select",
+        "msb": 0,
+        "lsb": 0,
+        "dataType": "BOOL"
+      }
+    ]
+  },
+  {
+    "name": "WR_CLK1",
+    "length" : 16,
+    "isWritable": true,
+    "isReadable": false,
+    "address": 9,
+    "bitMaps": [
+      {
+        "name": "CLK DIV [7:0]",
+        "msb": 15,
+        "lsb": 8,
+        "dataType": "DEC"
+      },
+      {
+        "name": "Reset Divider",
+        "msb": 7,
+        "lsb": 7,
+        "dataType": "BOOL"
+      },
+      {
+        "name": "CLK Fast In Mux",
+        "msb": 6,
+        "lsb": 6,
+        "dataType": "BIN"
+      }
+    ]
+  },
+  {
+    "name": "WR_CLK2",
+    "length" : 16,
+    "isWritable": true,
+    "isReadable": false,
+    "address": 9,
+    "bitMaps": [
+      {
+        "name": "PCH_LVT_SEL[8:9]",
+        "msb": 15,
+        "lsb": 14,
+        "dataType": "BIN"
+      },
+      {
+        "name": "PCH_RVT_SEL[0:9]",
+        "msb": 13,
+        "lsb": 4,
+        "dataType": "BOOL"
+      },
+      {
+        "name": "CLK DIV[11:8]",
+        "msb": 3,
+        "lsb": 0,
+        "dataType": "BIN"
+      }
+    ]
+  },
+  {
+    "name": "WR_CLK3",
+    "length" : 16,
+    "isWritable": true,
+    "isReadable": false,
+    "address": 9,
+    "bitMaps": [
+      {
+        "name": "PCH_HVT_SEL[2:9]",
+        "msb": 15,
+        "lsb": 8,
+        "dataType": "BIN"
+      },
+      {
+        "name": "PCH_LVT_SEL[0:7]",
+        "msb": 13,
+        "lsb": 4,
+        "dataType": "BOOL"
+      }
+    ]
+  },
+  {
+    "name": "WR_CLK4",
+    "length" : 16,
+    "isWritable": true,
+    "isReadable": false,
+    "address": 9,
+    "bitMaps": [
+      {
+        "name": "NCH_LVT_SEL[6:9]",
+        "msb": 15,
+        "lsb": 12,
+        "dataType": "BIN"
+      },
+      {
+        "name": "NCH_RVT_SEL[0:9]",
+        "msb": 11,
+        "lsb": 2,
+        "dataType": "BIN"
+      },
+      {
+        "name": "PCH_HVT_SEL[0:1]",
+        "msb": 1,
+        "lsb": 0,
+        "dataType": "BIN"
+      }
+    ]
+  },
+  {
+    "name": "WR_CLK5",
+    "length" : 16,
+    "isWritable": true,
+    "isReadable": false,
+    "address": 9,
+    "bitMaps": [
+      {
+        "name": "NCH_HVT_SEL[0:9]",
+        "msb": 15,
+        "lsb": 6,
+        "dataType": "BIN"
+      },
+      {
+        "name": "NCH_LVT_SEL[0:5]",
+        "msb": 5,
+        "lsb": 0,
+        "dataType": "BIN"
+      }
+    ]
+  },
+  {
+    "name": "WR_MISC1",
+    "length" : 16,
+    "isWritable": true,
+    "isReadable": false,
+    "address": 9,
+    "bitMaps": [
+      {
+        "name": "Correlator Reset SPI In",
+        "msb": 6,
+        "lsb": 6,
+        "dataType": "BOOL"
+      },
+      {
+        "name": "Offset Reset",
+        "msb": 5,
+        "lsb": 0,
+        "dataType": "DEC"
+      }
+    ]
+  },
+  {
+    "name": "RD_MS1",
+    "length" : 16,
+    "isWritable": false,
+    "isReadable": true,
+    "address": 9,
+    "bitMaps": [
+      {
+        "name": "Correlator Input",
+        "msb": 11,
+        "lsb": 11,
+        "dataType": "BOOL"
+      },
+      {
+        "name": "Correlator Error",
+        "msb": 10,
+        "lsb": 6,
+        "dataType": "DEC"
+      },
+      {
+        "name": "SAR Result",
+        "msb": 5,
+        "lsb": 0,
+        "dataType": "DEC"
+      }
+    ]
+  },
+  {
+    "name": "RD_AGOC1",
+    "length" : 16,
+    "isWritable": false,
+    "isReadable": true,
+    "address": 9,
+    "bitMaps": [
+      {
+        "name": "State",
+        "msb": 12,
+        "lsb": 12,
+        "dataType": "BOOL"
+      },
+      {
+        "name": "Boundary Flag",
+        "msb": 11,
+        "lsb": 11,
+        "dataType": "BOOL"
+      },
+      {
+        "name": "AGOC Gain",
+        "msb": 10,
+        "lsb": 7,
+        "dataType": "DEC"
+      },
+      {
+        "name": "AGOC Bit Decision",
+        "msb": 6,
+        "lsb": 6,
+        "dataType": "BOOL"
+      },
+      {
+        "name": "Data Offset",
+        "msb": 5,
+        "lsb": 0,
+        "dataType": "DEC"
+      }
+    ]
+  },
+  {
+    "name": "RD_RF1",
+    "length" : 16,
+    "isWritable": false,
+    "isReadable": true,
+    "address": 9,
+    "bitMaps": [
+      {
+        "name": "0",
+        "msb": 15,
+        "lsb": 0,
+        "dataType": "BIN"
+      }
+    ]
+  },
+  {
+    "name": "RD_BB1",
+    "length" : 16,
+    "isWritable": false,
+    "isReadable": true,
+    "address": 9,
+    "bitMaps": [
+      {
+        "name": "IF SPI Gain [2:0]",
+        "msb": 12,
+        "lsb": 10,
+        "dataType": "DEC"
+      },
+      {
+        "name": "BB SPI Gain [2:0]",
+        "msb": 9,
+        "lsb": 7,
+        "dataType": "DEC"
+      },
+      {
+        "name": "ADC Manual Threshold",
+        "msb": 6,
+        "lsb": 1,
+        "dataType": "DEC"
+      },
+      {
+        "name": "Gain Select",
+        "msb": 0,
+        "lsb": 0,
+        "dataType": "BOOL"
+      }
+    ]
+  },
+  {
+    "name": "RD_MISC",
+    "length" : 16,
+    "isWritable": false,
+    "isReadable": true,
+    "address": 9,
+    "bitMaps": [
+      {
+        "name": "0",
+        "msb": 15,
+        "lsb": 0,
+        "dataType": "BIN"
+      }
+    ]
+  },
+  {
+    "name": "RD_TEST",
+    "length" : 16,
+    "isWritable": false,
+    "isReadable": true,
+    "address": 9,
+    "bitMaps": [
+      {
+        "name": "0x1234",
+        "msb": 15,
+        "lsb": 0,
+        "dataType": "HEX"
+      }
+    ]
+  }
+]

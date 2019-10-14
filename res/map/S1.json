@@ -2,6 +2,7 @@
   {
     "name": "RCV_COR1",
     "isWritable": true,
+    "isReadable": false,
     "address": 1000012,
     "bitMaps": [
       {
@@ -25,6 +26,7 @@
   {
     "name": "RCV_COR2",
     "isWritable": true,
+    "isReadable": false,
     "address": 1000012,
     "bitMaps": [
       {
@@ -40,6 +42,7 @@
   {
     "name": "RCV_AGOC1",
     "isWritable": true,
+    "isReadable": false,
     "address": 1000012,
     "bitMaps": [
       {
@@ -63,6 +66,7 @@
   {
     "name": "RCV_AGOC2",
     "isWritable": true,
+    "isReadable": false,
     "address": 1000012,
     "bitMaps": [
       {
@@ -86,6 +90,7 @@
   {
     "name": "RCV_AGOC3",
     "isWritable": true,
+    "isReadable": false,
     "address": 1000012,
     "bitMaps": [
       {
@@ -109,6 +114,7 @@
   {
     "name": "RCV_AGOC4",
     "isWritable": true,
+    "isReadable": false,
     "address": 1000012,
     "bitMaps": [
       {
@@ -140,6 +146,7 @@
   {
     "name": "RCV_AGOC5",
     "isWritable": true,
+    "isReadable": false,
     "address": 1000012,
     "bitMaps": [
       {
@@ -195,6 +202,7 @@
   {
     "name": "RCV_MISC",
     "isWritable": true,
+    "isReadable": false,
     "address": 1000012,
     "bitMaps": [
       {
@@ -234,6 +242,7 @@
   {
     "name": "RCV_TMG1",
     "isWritable": true,
+    "isReadable": false,
     "address": 1000012,
     "bitMaps": [
       {
@@ -257,6 +266,7 @@
   {
     "name": "RCV_TMG2",
     "isWritable": true,
+    "isReadable": false,
     "address": 1000012,
     "bitMaps": [
       {
@@ -272,6 +282,7 @@
   {
     "name": "RCV_TMG3",
     "isWritable": true,
+    "isReadable": false,
     "address": 1000012,
     "bitMaps": [
       {
@@ -287,6 +298,7 @@
   {
     "name": "RCV_TMG4",
     "isWritable": true,
+    "isReadable": false,
     "address": 1000012,
     "bitMaps": [
       {
@@ -302,6 +314,7 @@
   {
     "name": "RCV_TMG5",
     "isWritable": true,
+    "isReadable": false,
     "address": 1000012,
     "bitMaps": [
       {
@@ -317,6 +330,7 @@
   {
     "name": "RCV_TMG6",
     "isWritable": true,
+    "isReadable": false,
     "address": 1000012,
     "bitMaps": [
       {
@@ -332,6 +346,7 @@
   {
     "name": "RCV_CLK1",
     "isWritable": true,
+    "isReadable": false,
     "address": 1000012,
     "bitMaps": [
       {
@@ -347,6 +362,7 @@
   {
     "name": "RCV_CLK2",
     "isWritable": true,
+    "isReadable": false,
     "address": 1000012,
     "bitMaps": [
       {
@@ -362,6 +378,7 @@
   {
     "name": "RCV_CLK3",
     "isWritable": true,
+    "isReadable": false,
     "address": 1000012,
     "bitMaps": [
       {
@@ -377,6 +394,7 @@
   {
     "name": "RCV_CLK4",
     "isWritable": true,
+    "isReadable": false,
     "address": 1000012,
     "bitMaps": [
       {
@@ -424,6 +442,7 @@
   {
     "name": "RCV_CLK5",
     "isWritable": true,
+    "isReadable": false,
     "address": 1000012,
     "bitMaps": [
       {
@@ -455,6 +474,7 @@
   {
     "name": "RCV_BB",
     "isWritable": true,
+    "isReadable": false,
     "address": 1000012,
     "bitMaps": [
       {
@@ -478,6 +498,7 @@
   {
     "name": "RCV_RF1",
     "isWritable": true,
+    "isReadable": false,
     "address": 1000012,
     "bitMaps": [
       {
@@ -557,6 +578,7 @@
   {
     "name": "RCV_RF2",
     "isWritable": true,
+    "isReadable": false,
     "address": 1000012,
     "bitMaps": [
       {
@@ -572,6 +594,7 @@
   {
     "name": "WRT_BB",
     "isWritable": false,
+    "isReadable": true,
     "address": 1000012,
     "bitMaps": [
       {
@@ -587,6 +610,7 @@
   {
     "name": "WRT_RF1",
     "isWritable": false,
+    "isReadable": true,
     "address": 1000012,
     "bitMaps": [
       {
@@ -666,6 +690,7 @@
   {
     "name": "WRT_RF2",
     "isWritable": false,
+    "isReadable": true,
     "address": 1000012,
     "bitMaps": [
       {
@@ -681,6 +706,7 @@
   {
     "name": "WRT_AGOC",
     "isWritable": false,
+    "isReadable": true,
     "address": 1000012,
     "bitMaps": [
       {
@@ -728,6 +754,7 @@
   {
     "name": "WRT_COR1",
     "isWritable": false,
+    "isReadable": true,
     "address": 1000012,
     "bitMaps": [
       {
@@ -767,6 +794,7 @@
   {
     "name": "WRT_COR2",
     "isWritable": false,
+    "isReadable": true,
     "address": 1000012,
     "bitMaps": [
       {

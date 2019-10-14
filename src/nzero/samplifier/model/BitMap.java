@@ -8,19 +8,16 @@ public class BitMap {
     private final int msb, lsb;
     private final DataType dataType; // immutable
     private final int maxVal, minVal;
-    private int data; // instanceof either String, Integer, or Boolean
 
     public BitMap(String name,
                   int msb,
                   int lsb,
                   DataType dataType,
                   int maxVal,
-                  int minVal,
-                  int data) {
+                  int minVal) {
         this.name = name;
         this.msb = msb;
         this.lsb = lsb;
-        this.data = data;
 
         if (maxVal - minVal == 0) {
             this.maxVal = 2 << getLength() - 1;
@@ -37,6 +34,10 @@ public class BitMap {
         }
     }
 
+    public BitMap(String name, int msb, int lsb, DataType dataType) {
+        this(name, msb, lsb, dataType, 0, 0);
+    }
+
     public BitMap(BitMap other) {
         this.name = other.name;
         this.msb = other.msb;
@@ -44,7 +45,6 @@ public class BitMap {
         this.dataType = other.dataType;
         this.maxVal = other.maxVal;
         this.minVal = other.minVal;
-        this.data = other.data;
     }
 
     public String getName() {

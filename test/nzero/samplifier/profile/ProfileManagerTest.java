@@ -27,12 +27,12 @@ public class ProfileManagerTest {
 //        bitMaps0.add(new BitMap("AGOC", 0, 0));
 
         List<BitMap> bitMaps1 = new ArrayList<>();
-        bitMaps1.add(new BitMap("Gain Reset", 13, 10, DataType.BIN, Integer.MAX_VALUE, Integer.MIN_VALUE, 9));
-        bitMaps1.add(new BitMap("Offset Reset", 9, 4, DataType.BIN, Integer.MAX_VALUE, Integer.MIN_VALUE, 16));
-        bitMaps1.add(new BitMap("Gain Mux",3,3, DataType.BIN, Integer.MAX_VALUE, Integer.MIN_VALUE, 1));
-        bitMaps1.add(new BitMap("Gain Enable", 2,2, DataType.BIN, Integer.MAX_VALUE, Integer.MIN_VALUE, 0));
-        bitMaps1.add(new BitMap("Offset Enable", 1, 1, DataType.BIN, Integer.MAX_VALUE, Integer.MIN_VALUE, 1));
-        bitMaps1.add(new BitMap("AGOC", 0, 0, DataType.BIN, Integer.MAX_VALUE, Integer.MIN_VALUE, 0));
+//        bitMaps1.add(new BitMap("Gain Reset", 13, 10, DataType.BIN, Integer.MAX_VALUE, Integer.MIN_VALUE, 9));
+//        bitMaps1.add(new BitMap("Offset Reset", 9, 4, DataType.BIN, Integer.MAX_VALUE, Integer.MIN_VALUE, 16));
+//        bitMaps1.add(new BitMap("Gain Mux",3,3, DataType.BIN, Integer.MAX_VALUE, Integer.MIN_VALUE, 1));
+//        bitMaps1.add(new BitMap("Gain Enable", 2,2, DataType.BIN, Integer.MAX_VALUE, Integer.MIN_VALUE, 0));
+//        bitMaps1.add(new BitMap("Offset Enable", 1, 1, DataType.BIN, Integer.MAX_VALUE, Integer.MIN_VALUE, 1));
+//        bitMaps1.add(new BitMap("AGOC", 0, 0, DataType.BIN, Integer.MAX_VALUE, Integer.MIN_VALUE, 0));
 
         register0 = new Register("RCV_AGOC5", 0, true, bitMaps0);
         register1 = new Register("RCV_AGOC5", 0, false, bitMaps1);

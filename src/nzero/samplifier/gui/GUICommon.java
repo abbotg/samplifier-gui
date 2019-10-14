@@ -11,9 +11,9 @@ import nzero.samplifier.profile.ProfileMismatchException;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.prefs.BackingStoreException;
+import java.util.prefs.Preferences;
 import java.util.stream.Collectors;
 
 public class GUICommon {
@@ -62,7 +62,7 @@ public class GUICommon {
 
     public JMenuBar createMenuBar() {
         JMenuBar menuBar;
-        JMenu viewMenu, profileMenu, helpMenu;
+        JMenu viewMenu, profileMenu, helpMenu, samplifierMenu;
         JRadioButtonMenuItem radioButtonMenuItem;
         JMenuItem menuItem;
 
@@ -118,14 +118,23 @@ public class GUICommon {
         menuItem.addActionListener(this::profileSetDefaultButton);
         profileMenu.add(menuItem);
 
+        //  samplifier menu
+        samplifierMenu = new JMenu("Samplifier");
+        menuItem = new JMenuItem("Change Register Map...");
+        menuItem.addActionListener(this::changeRegisterMap);
+        samplifierMenu.add(menuItem);
+
 
         // placeholder
         helpMenu = new JMenu("Help");
 
+        menuBar.add(samplifierMenu);
         menuBar.add(connectionMenu);
         menuBar.add(viewMenu);
         menuBar.add(profileMenu);
         menuBar.add(helpMenu);
+
+
 
 
         return menuBar;
@@ -177,6 +186,12 @@ public class GUICommon {
         }
     }
 
+    private void changeRegisterMap(ActionEvent e) {
+        Preferences preferences = Preferences.userRoot().node("nzero/samplifier/regmap");
+        preferences.remove("last");
+        JOptionPane.showMessageDialog(getActiveFrame(), "The register map selection popup will now appear the next time the program is restarted.");
+    }
+
     private void profileSetDefaultButton(ActionEvent e) {
         Object[] possibilities = profileManager.getProfiles().toArray();
         String s = (String) JOptionPane.showInputDialog(
@@ -210,7 +225,7 @@ public class GUICommon {
      */
     public void updateProfilesMenu() {
         if (profileManager == null) {
-            profileManager = new ProfileManager();
+            profileManager = new ProfileManager(); // TODO: will never happen, profile manager created in SamplifierGUI.java
         }
         loadProfilesMenu.removeAll();
         List<String> profiles = profileManager.getProfiles();
@@ -266,13 +281,20 @@ public class GUICommon {
 
     public void write(Register register) {
         write(Collections.singletonList(register));
+
+    }
+
+    public void write(ActionEvent e) {
+        String name = e.getActionCommand();
+        write(getRegister(name));
     }
 
     // TODO: this method should be somewhere else
-    public void write(List<Register> registers) {
+    public void write(Collection<Register> registers) {
         StringBuilder builder = new StringBuilder();
+        List<Register> writable = registers.stream().filter(Register::isWritable).collect(Collectors.toList());
         builder.append("Write the following?\n\n");
-        for (Register register : registers.stream().filter(Register::isWritable).collect(Collectors.toList())) {
+        for (Register register : writable) {
             builder.append(register.getName())
                     .append(": ")
                     .append(register.getBinaryString())
@@ -297,6 +319,15 @@ public class GUICommon {
 
     private JFrame getActiveFrame() {
         return activeWindow.getFrame();
+    }
+
+    public Register getRegister(String name) {
+        for (Register register : registers) {
+            if (register.getName().equals(name)) {
+                return register;
+            }
+        }
+        return null;
     }
 
 

@@ -2,12 +2,14 @@ package nzero.samplifier.gui.advanced;
 
 import nzero.samplifier.gui.GUICommon;
 import nzero.samplifier.gui.SamplifierMainWindow;
+import nzero.samplifier.gui.basic.RegisterPopOutWindow;
 import nzero.samplifier.model.Register;
 
 import javax.swing.*;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableColumnModel;
 import java.awt.*;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 public class AdvancedMainWindow extends JFrame implements SamplifierMainWindow {
@@ -63,7 +65,17 @@ public class AdvancedMainWindow extends JFrame implements SamplifierMainWindow {
     }
 
     @Override
+    public void addPopOutWindow(RegisterPopOutWindow window) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
     public void fireWriteRegistersDataChange() {
 
+    }
+
+    @Override
+    public void addHintFor(Component component, Supplier<String> hint) {
+        throw new UnsupportedOperationException();
     }
 }

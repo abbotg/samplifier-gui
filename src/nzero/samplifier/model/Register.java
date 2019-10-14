@@ -1,27 +1,51 @@
 package nzero.samplifier.model;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class Register {
 
-    private String name;
+    private @NotNull String name;
     //private int bitWidth; // handled by individual BitMaps
-    private boolean isWritable;
-    private List<BitMap> bitMaps;
+    private @NotNull RegisterType registerType;
+    private @NotNull List<BitMap> bitMaps;
     private int address; //TODO: implement this
     private int data;
+    private int length;
 
-    public Register(String name, int address, boolean isWritable, List<BitMap> bitMaps) {
+    @Deprecated
+    public Register(@NotNull String name, int address, boolean isWritable, @NotNull List<BitMap> bitMaps) {
         this.name = name;
-        this.isWritable = isWritable;
         this.bitMaps = bitMaps;
         this.address = address;
+        if (isWritable) {
+            registerType = RegisterType.WRITE;
+        } else {
+            registerType = RegisterType.READ; // TODO: read-write
+        }
+
+    }
+
+    public Register(@NotNull String name,
+                    @NotNull RegisterType registerType,
+                    @NotNull List<BitMap> bitMaps,
+                    int address,
+                    int length,
+                    int data) {
+        this.name = name;
+        this.registerType = registerType;
+        this.bitMaps = bitMaps;
+        this.address = address;
+        this.length = length;
+        this.data = data;
     }
 
     public Register(Register other) {
         this.name = other.name;
-        this.isWritable = other.isWritable;
+        this.registerType = other.registerType;
         this.address = other.address;
         this.data = other.data;
         this.bitMaps = new ArrayList<>(other.bitMaps.size());
@@ -39,15 +63,21 @@ public class Register {
     }
 
     public int getBitWidth() {
-        int count = 0;
-        for (BitMap map : bitMaps) {
-            count += map.getLength();
-        }
-        return count;
+//        int count = 0;
+//        for (BitMap map : bitMaps) {
+//            count += map.getLength();
+//        }
+//        return count;
+        return length;
     }
 
-    public boolean isWritable() {
-        return isWritable;
+    public int getLength() {
+        return getBitWidth();
+    }
+
+    @NotNull
+    public RegisterType getRegisterType() {
+        return registerType;
     }
 
     /**
@@ -63,6 +93,10 @@ public class Register {
 
     public int getData() {
         return data;
+    }
+
+    public boolean isWritable() {
+        return registerType == RegisterType.WRITE || registerType == RegisterType.READ_WRITE;
     }
 
 //    /**

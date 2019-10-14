@@ -10,6 +10,7 @@ import javax.swing.*;
 /**
  * "Basic" mode
  */
+@Deprecated
 public class WriteRegisterTableModel extends AbstractRegisterTableModel {
     public static boolean DEBUG = true;
 

@@ -8,7 +8,7 @@ import java.text.MessageFormat;
 
 public class ArduinoConnectionTest {
     public static void main(String[] args) {
-        SamplifierConnection connection = SamplifierAPI.createConnection("/dev/ttyS4");
+        SamplifierConnection connection = SamplifierAPI.createConnection("/dev/ttyACM0");
         connection.setSamplifierResponseListener(new Listener());
         try {
             Thread.sleep(2000);

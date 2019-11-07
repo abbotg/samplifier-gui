@@ -265,7 +265,16 @@ public class GUICommon {
                 } else {
                     if (SamplifierAPI.isValidPort(input)) {
                         connection = SamplifierAPI.createConnection(input);
-                        valid = true;
+                        if (connection == null) {
+                            valid = false;
+                            JOptionPane.showMessageDialog(getActiveFrame(),
+                                    "Connection failed",
+                                    "Error",
+                                    JOptionPane.ERROR_MESSAGE);
+                        } else {
+                            valid = true;
+                        }
+
                     } else {
                         valid = false;
                         JOptionPane.showMessageDialog(getActiveFrame(),

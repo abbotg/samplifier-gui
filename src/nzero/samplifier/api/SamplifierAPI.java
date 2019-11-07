@@ -2,6 +2,7 @@ package nzero.samplifier.api;
 
 import com.fazecast.jSerialComm.SerialPort;
 import com.fazecast.jSerialComm.SerialPortInvalidPortException;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -14,6 +15,7 @@ public class SamplifierAPI {
     private SamplifierAPI() {
     }
 
+    @Nullable
     public static SamplifierConnection createConnection(String portName) {
         SerialPort comPort = SerialPort.getCommPort(portName);
         comPort.setBaudRate(9600);
@@ -27,8 +29,12 @@ public class SamplifierAPI {
                 //Open the USB port and initialize the PrintWriter.
                 comPort.openPort();
                 Thread.sleep(1000);
-                output = new PrintWriter(comPort.getOutputStream());
-                input = new BufferedReader(new InputStreamReader(comPort.getInputStream()));
+                try { // TODO: bad practice, but library is the source of the problem here
+                    output = new PrintWriter(comPort.getOutputStream());
+                    input = new BufferedReader(new InputStreamReader(comPort.getInputStream()));
+                } catch (NullPointerException ignored) {
+                    return null;
+                }
             } catch (Exception c) {
                 c.printStackTrace();
                 exit(1);

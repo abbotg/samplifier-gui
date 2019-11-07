@@ -1,5 +1,6 @@
 package nzero.samplifier.gui;
 
+import com.fazecast.jSerialComm.SerialPort;
 import nzero.samplifier.api.SamplifierAPI;
 import nzero.samplifier.api.SamplifierConnection;
 import nzero.samplifier.api.SamplifierResponseListener;
@@ -253,9 +254,17 @@ public class GUICommon {
         if (connection == null) {
             String input;
             boolean valid;
+            SerialPort[] ports = SerialPort.getCommPorts();
+            StringBuilder sb = new StringBuilder();
+            sb.append("Choose COM port or device file from the following:\n\n");
+            for (SerialPort port : ports) {
+                sb.append(port.getSystemPortName());
+                sb.append('\n');
+            }
+            sb.append('\n');
             do {
                 input = JOptionPane.showInputDialog(getActiveFrame(),
-                        "Enter COM port or Linux dev location",
+                        sb.toString(),
                         "/dev/ttyACM0"); // TODO: scan for existing
                 if (input == null) {
                     return;

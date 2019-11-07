@@ -2,6 +2,7 @@ package nzero.samplifier.gui;
 
 import nzero.samplifier.api.SamplifierAPI;
 import nzero.samplifier.api.SamplifierConnection;
+import nzero.samplifier.api.SamplifierResponseListener;
 import nzero.samplifier.gui.advanced.AdvancedMainWindow;
 import nzero.samplifier.gui.basic.BasicMainWindow;
 import nzero.samplifier.model.Register;
@@ -10,9 +11,7 @@ import nzero.samplifier.profile.ProfileMismatchException;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.*;
-import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 import java.util.stream.Collectors;
 
@@ -236,8 +235,12 @@ public class GUICommon {
         }
     }
 
+    public boolean isConnected() {
+        return connection != null && connection.isConnected();
+    }
+
     public void updateConnectionMenu() {
-        if (connection != null && connection.isConnected()) {
+        if (isConnected()) {
             connectionStatus.setText("Status: Connected");
             connectionButton.setText("Disconnect");
         } else {
@@ -279,18 +282,70 @@ public class GUICommon {
         updateConnectionMenu();
     }
 
-    public void write(Register register) {
-        write(Collections.singletonList(register));
+    class Listener implements SamplifierResponseListener {
+
+        @Override
+        public void didReadRegister(int address, int data) {
+            Register register = null;
+            for (Register r : registers) {
+                if (r.getAddress() == address) {
+                    register = r;
+                    break;
+                }
+            }
+            if (register == null) {
+                System.err.println("Arduino callback: got invalid register address");
+                // TODO: alert gui
+                return;
+            }
+            System.out.printf("Read of register %s addr %d (0b%s) got data %d (0b%s)%n",
+                    register.getName(),
+                    register.getAddress(),
+                    Integer.toBinaryString(register.getAddress()),
+                    data,
+                    Integer.toBinaryString(data)
+            );
+            register.setData(data);
+            activeWindow.fireReadRegistersDataChange();
+        }
+
+        @Override
+        public void didWriteRegister(int address, int data) {
+
+        }
+
+        @Override
+        public void digitalIOUpdate(String pin, boolean value) {
+
+        }
+    }
+
+    private void write(Register register) {
+        connection.writeRegister((char) register.getAddress(), register.getData()); //TODO: char vs int?
+        System.out.printf("Wrote register %s at address %d (0b%s) with value %d (0b%s)%n",
+                register.getName(),
+                register.getAddress(),
+                Integer.toBinaryString(register.getAddress()),
+                register.getData(),
+                register.getBinaryString()
+        );
+        try {
+            Thread.sleep(50);
+        } catch (InterruptedException ignored) { }
+    }
+
+    public void confirmAndWrite(Register register) {
+        confirmAndWrite(Collections.singletonList(register));
 
     }
 
-    public void write(ActionEvent e) {
+    public void confirmAndWrite(ActionEvent e) {
         String name = e.getActionCommand();
-        write(getRegister(name));
+        confirmAndWrite(getRegister(name));
     }
 
     // TODO: this method should be somewhere else
-    public void write(Collection<Register> registers) {
+    public void confirmAndWrite(Collection<Register> registers) {
         StringBuilder builder = new StringBuilder();
         List<Register> writable = registers.stream().filter(Register::isWritable).collect(Collectors.toList());
         builder.append("Write the following?\n\n");
@@ -303,14 +358,37 @@ public class GUICommon {
         }
         int option = JOptionPane.showConfirmDialog(getActiveFrame(), builder.toString(), "Write", JOptionPane.YES_NO_OPTION);
         if (option == JOptionPane.YES_OPTION) {
-            System.out.println("written");
+            for (Register register : writable) {
+                write(register);
+            }
         } else {
             System.out.println("not written");
         }
     }
 
-    public void writeAll() {
-        write(registers);
+    public void confirmAndWriteAll() {
+        confirmAndWrite(registers);
+    }
+
+    public void read(Register register) { // TODO: what if register not read?
+        if (isConnected()) {
+            connection.setSamplifierResponseListener(new Listener());
+            System.out.printf("Requesting read of register %s addr %d%n", register.getName(), register.getAddress());
+            connection.readRegister((char) register.getAddress()); // TODO: address char or int?
+        } else {
+            System.err.println("Not connected"); // TODO: gui alert
+        }
+    }
+
+    public void readAll(Collection<Register> registers) {
+        if (isConnected()) {
+            connection.setSamplifierResponseListener(new Listener());
+            for (Register register : registers) {
+                connection.readRegister((char) register.getAddress()); // TODO: address char or int?
+            }
+        } else {
+            System.err.println("Not connected"); // TODO: gui alert
+        }
     }
 
     public List<Register> registers() {

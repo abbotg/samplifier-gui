@@ -99,6 +99,10 @@ public class Register {
         return registerType == RegisterType.WRITE || registerType == RegisterType.READ_WRITE;
     }
 
+    public boolean isReadable() {
+        return registerType == RegisterType.READ || registerType == RegisterType.READ_WRITE;
+    }
+
 //    /**
 //     * Concatenate all bitmaps into the single data value for this register
 //     * @return

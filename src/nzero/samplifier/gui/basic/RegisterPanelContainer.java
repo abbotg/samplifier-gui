@@ -34,7 +34,7 @@ public class RegisterPanelContainer extends JPanel implements ItemListener {
     private Container panelContainer; // Either a JTabbedPane or JPanel with card layout
     private List<RegisterPanel> registerPanels;
     private List<Register> registers;
-    private Register currentRegister;
+    private Register currentRegister; // only valid if panelContainer is a JPanel w/ card layout
     private JToolBar toolBar;
     private RegisterType registerType;
     private final boolean usesTabs;
@@ -140,7 +140,7 @@ public class RegisterPanelContainer extends JPanel implements ItemListener {
 
     RegisterPanel currentRegisterPanel() {
         for (RegisterPanel panel : registerPanels) {
-            if (panel.getRegister().equals(this.currentRegister)) {
+            if (panel.getRegister().equals(currentRegister())) {
                 return panel;
             }
         }
@@ -220,24 +220,28 @@ public class RegisterPanelContainer extends JPanel implements ItemListener {
 
     private JButton createReadButton() {
         JButton button = createButton("Read", inputHandler::read);
+        button.setActionCommand("");
         inputHandler.mainWindow().addHintFor(button, () -> "Read from register " + currentRegister().getName());
         return button;
     }
 
     private JButton createReadAllButton() {
         JButton button = createButton("Read All", inputHandler::readAll);
+        button.setActionCommand("");
         inputHandler.mainWindow().addHintFor(button, () ->"Read all registers");
         return button;
     }
 
     private JButton createWriteButton() {
         JButton button = createButton("Write", inputHandler::write);
+        button.setActionCommand("");
         inputHandler.mainWindow().addHintFor(button, () -> "Write to register " + currentRegister().getName());
         return button;
     }
 
     private JButton createWriteAllButton() {
         JButton button = createButton("Write All", inputHandler::writeAll);
+        button.setActionCommand("");
         inputHandler.mainWindow().addHintFor(button, () -> "Write to all registers");
         return button;
     }

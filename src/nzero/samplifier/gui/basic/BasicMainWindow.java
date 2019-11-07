@@ -3,7 +3,6 @@ package nzero.samplifier.gui.basic;
 import nzero.samplifier.gui.GUIInputHandler;
 import nzero.samplifier.gui.GUICommon;
 import nzero.samplifier.gui.SamplifierMainWindow;
-import nzero.samplifier.gui.basic.hint.MouseOverHintManager;
 import nzero.samplifier.gui.basic.hint.MouseOverHintManager2;
 import nzero.samplifier.model.Register;
 import nzero.samplifier.model.RegisterType;
@@ -234,13 +233,17 @@ public class BasicMainWindow extends JFrame implements SamplifierMainWindow, GUI
         return writeContainer.currentRegisterPanel();
     }
 
+    public RegisterPanel getCurrentReadRegisterPanel() {
+        return readContainer.currentRegisterPanel();
+    }
+
     private void writeButton(ActionEvent e) {
         Register current = getCurrentWriteRegister();
-        common.write(current);
+        common.confirmAndWrite(current);
     }
 
     private void writeAllButton(ActionEvent e) {
-        common.writeAll();
+        common.confirmAndWriteAll();
     }
 
 //    @Deprecated
@@ -311,6 +314,18 @@ public class BasicMainWindow extends JFrame implements SamplifierMainWindow, GUI
     }
 
     @Override
+    public void fireReadRegistersDataChange() {
+        getCurrentReadRegisterPanel().updateRegisterData();
+        cleanPopOutWindows();
+
+        for (RegisterPopOutWindow window : popOutWindows) {
+            if (window.getRegister().isReadable()) {
+                window.fireDataChange();
+            }
+        }
+    }
+
+    @Override
     public void addHintFor(Component component, Supplier<String> runnable) {
         hintManager.addHintFor(component, runnable);
     }
@@ -324,21 +339,33 @@ public class BasicMainWindow extends JFrame implements SamplifierMainWindow, GUI
         String command = e.getActionCommand();
         if (command != null && !command.isEmpty()) {
             // action command (from pop out window)
-            common.write(common.getRegister(command));
+            Register register = common.getRegister(command);
+            if (register == null) {
+                System.err.println("ActionCommand invalid register");
+                return;
+            }
+            common.confirmAndWrite(register);
         } else {
             // get active register (from main window)
-            common.write(writeContainer.currentRegister());
+            common.confirmAndWrite(writeContainer.currentRegister());
         }
     }
 
     @Override
     public void read(ActionEvent e) {
-        // TODO
+        String command = e.getActionCommand();
+        if (command != null && !command.isEmpty()) {
+            // action command (from pop out window)
+            common.read(common.getRegister(command));
+        } else {
+            // get active register (from main window)
+            common.read(readContainer.currentRegister());
+        }
     }
 
     @Override
     public void writeAll(ActionEvent e) {
-        common.writeAll();
+        common.confirmAndWriteAll();
     }
 
     @Override

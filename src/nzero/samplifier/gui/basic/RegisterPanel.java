@@ -97,7 +97,7 @@ public class RegisterPanel extends JPanel {
 
     public void updateRegisterData() {
         tableModel.fireTableDataChanged();
-//        table.repaint();
+        table.repaint();
     }
 
     @NotNull

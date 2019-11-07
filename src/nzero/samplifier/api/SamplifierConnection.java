@@ -8,6 +8,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Arrays;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class SamplifierConnection {
     private String serialPortName;
@@ -16,7 +18,8 @@ public class SamplifierConnection {
     private PrintWriter output;
     private BufferedReader input;
 
-    private StringBuilder readBuffer; // TODO: handle incompleteness
+    private StringBuilder readBuffer;
+    private Lock bufferLock;
 
     private static final char
             READ_OPERATION_CODE = 0x0,
@@ -33,6 +36,7 @@ public class SamplifierConnection {
         this.serialPort = serialPort;
         this.output = output;
         this.input = input;
+        this.bufferLock = new ReentrantLock();
         this.readBuffer = new StringBuilder();
 
         this.serialPort.addDataListener(new SerialPortDataListener() {
@@ -47,21 +51,27 @@ public class SamplifierConnection {
                     return;
                 byte[] newData = new byte[serialPort.bytesAvailable()];
                 int numRead = serialPort.readBytes(newData, newData.length);
-                System.out.println("Read " + numRead + " bytes.");
-                System.out.println("Got data" + Arrays.toString(newData));
+//                System.out.println("Read " + numRead + " bytes.");
+//                System.out.println("Got data" + Arrays.toString(newData));
                 bufferSerialData(newData);
             }
         });
     }
 
     private void bufferSerialData(byte[] data) {
+        bufferLock.lock();
+        if (data.length > 4) {
+            System.err.println("Error: too many bytes from serial"); //todo: fix this
+        }
         for (byte b : data) {
             readBuffer.append((char) b);
         }
         if (readBuffer.length() == 4) {
             dispatchSerialEvent(readBuffer.toString().toCharArray());
-            readBuffer.delete(0, readBuffer.length() - 1);
+            readBuffer.delete(0, readBuffer.length());
+            readBuffer.setLength(0);
         }
+        bufferLock.unlock();
     }
 
     private void dispatchSerialEvent(char[] data) {

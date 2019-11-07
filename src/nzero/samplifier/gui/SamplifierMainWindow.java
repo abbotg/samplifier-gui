@@ -19,6 +19,8 @@ public interface SamplifierMainWindow {
 
     void fireWriteRegistersDataChange();
 
+    void fireReadRegistersDataChange();
+
     /* Only valid in basic */
     void addHintFor(Component component, Supplier<String> hint);
 

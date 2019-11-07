@@ -71,7 +71,12 @@ public class AdvancedMainWindow extends JFrame implements SamplifierMainWindow {
 
     @Override
     public void fireWriteRegistersDataChange() {
+        // TODO
+    }
 
+    @Override
+    public void fireReadRegistersDataChange() {
+        // TODO
     }
 
     @Override

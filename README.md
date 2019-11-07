@@ -23,6 +23,9 @@ Where `/path/to/` is the directory containing your `.jar` file. For example, on 
 java -jar /Users/Gunther/Downloads/samplifier-gui.jar
 ```
 
+### Updating
+To update, all you have to do is download the latest `samplifier-gui.jar` file from the [releases page](https://github.com/abbotg/samplifier-gui/releases) and delete your previously downloaded copy.
+
 ## Usage
 
 Currently the COM port (on Windows) or device file (on macOS/Linux) has to be manually selected by the user. To find the port used, 

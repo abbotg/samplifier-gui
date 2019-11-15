@@ -25,6 +25,7 @@ public class GUICommon {
     private GUIMode mode;
     private SamplifierMainWindow activeWindow;
     private SamplifierConnection connection;
+    private SamplifierResponseListener listener;
 
     public static final String WINDOW_NAME = "Samplifier GUI";
 
@@ -273,7 +274,7 @@ public class GUICommon {
                     valid = false;
                 } else {
                     if (SamplifierAPI.isValidPort(input)) {
-                        connection = SamplifierAPI.createConnection(input);
+                        connection = SamplifierAPI.createConnection(input, new Listener());
                         if (connection == null) {
                             valid = false;
                             JOptionPane.showMessageDialog(getActiveFrame(),
@@ -316,7 +317,7 @@ public class GUICommon {
                 // TODO: alert gui
                 return;
             }
-            System.out.printf("Read of register %s addr %d (0b%s) got data %d (0b%s)%n",
+            System.out.printf("ARDUINO: Read of register %s addr %d (0b%s) got data %d (0b%s)%n",
                     register.getName(),
                     register.getAddress(),
                     Integer.toBinaryString(register.getAddress()),
@@ -328,28 +329,58 @@ public class GUICommon {
         }
 
         @Override
-        public void didWriteRegister(int address, int data) {
-
+        public void didWriteRegister(int address, boolean success) {
+            Register register = null;
+            for (Register r : registers) {
+                if (r.getAddress() == address) {
+                    register = r;
+                    break;
+                }
+            }
+            if (register == null) {
+                System.err.println("Arduino callback: got invalid register address");
+                // TODO: alert gui
+                return;
+            }
+            System.out.printf("ARDUINO: Write %s of register %s addr %d (0b%s)%n",
+                    success ? "succeeded" : "failed",
+                    register.getName(),
+                    register.getAddress(),
+                    Integer.toBinaryString(register.getAddress()));
         }
 
         @Override
         public void digitalIOUpdate(String pin, boolean value) {
 
         }
+
+        @Override
+        public void portClosed(String portName) {
+            connection.disconnect();
+            JOptionPane.showMessageDialog(getActiveFrame(),
+                    "Port closed",
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE);
+        }
     }
 
     private void write(Register register) {
-        connection.writeRegister((char) register.getAddress(), register.getData()); //TODO: char vs int?
-        System.out.printf("Wrote register %s at address %d (0b%s) with value %d (0b%s)%n",
-                register.getName(),
-                register.getAddress(),
-                Integer.toBinaryString(register.getAddress()),
-                register.getData(),
-                register.getBinaryString()
-        );
-        try {
-            Thread.sleep(50);
-        } catch (InterruptedException ignored) { }
+        if (isConnected()) {
+            connection.writeRegister((char) register.getAddress(), register.getData()); //TODO: char vs int?
+            System.out.printf("Wrote register %s at address %d (0b%s) with value %d (0b%s)%n",
+                    register.getName(),
+                    register.getAddress(),
+                    Integer.toBinaryString(register.getAddress()),
+                    register.getData(),
+                    register.getBinaryString()
+            );
+            try {
+                Thread.sleep(50);
+            } catch (InterruptedException ignored) {
+            }
+        } else {
+            System.err.println("Not connected"); // TODO: gui alert
+        }
     }
 
     public void confirmAndWrite(Register register) {
@@ -390,7 +421,6 @@ public class GUICommon {
 
     public void read(Register register) { // TODO: what if register not read?
         if (isConnected()) {
-            connection.setSamplifierResponseListener(new Listener());
             System.out.printf("Requesting read of register %s addr %d%n", register.getName(), register.getAddress());
             connection.readRegister((char) register.getAddress()); // TODO: address char or int?
         } else {
@@ -400,7 +430,6 @@ public class GUICommon {
 
     public void readAll(Collection<Register> registers) {
         if (isConnected()) {
-            connection.setSamplifierResponseListener(new Listener());
             for (Register register : registers) {
                 connection.readRegister((char) register.getAddress()); // TODO: address char or int?
             }

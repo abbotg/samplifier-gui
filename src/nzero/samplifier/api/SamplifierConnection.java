@@ -18,10 +18,11 @@ public class SamplifierConnection {
     private PrintWriter output;
     private BufferedReader input;
 
-    private StringBuilder readBuffer;
+    private byte[] readBuffer;
+    private int bufferIndex;
     private Lock bufferLock;
 
-    private static final char
+    private static final byte
             READ_OPERATION_CODE = 0x0,
             WRITE_OPERATION_CODE = 0x1,
             READ_CALLBACK_CODE = 0x0,
@@ -31,13 +32,15 @@ public class SamplifierConnection {
     SamplifierConnection(String serialPortName,
                          SerialPort serialPort,
                          PrintWriter output,
-                         BufferedReader input) {
+                         BufferedReader input,
+                         SamplifierResponseListener listener) {
         this.serialPortName = serialPortName;
         this.serialPort = serialPort;
         this.output = output;
         this.input = input;
         this.bufferLock = new ReentrantLock();
-        this.readBuffer = new StringBuilder();
+        this.readBuffer = new byte[4];
+        this.listener = listener;
 
         this.serialPort.addDataListener(new SerialPortDataListener() {
             @Override
@@ -49,7 +52,11 @@ public class SamplifierConnection {
             public void serialEvent(SerialPortEvent event) {
                 if (event.getEventType() != SerialPort.LISTENING_EVENT_DATA_AVAILABLE)
                     return;
-                byte[] newData = new byte[serialPort.bytesAvailable()];
+                int avail = serialPort.bytesAvailable();
+                if (avail == -1) {
+                    listener.portClosed(serialPortName);
+                }
+                byte[] newData = new byte[avail];
                 int numRead = serialPort.readBytes(newData, newData.length);
 //                System.out.println("Read " + numRead + " bytes.");
 //                System.out.println("Got data" + Arrays.toString(newData));
@@ -63,66 +70,73 @@ public class SamplifierConnection {
         if (data.length > 4) {
             System.err.println("Error: too many bytes from serial"); //todo: fix this
         }
+        int i = 0;
         for (byte b : data) {
-            readBuffer.append((char) b);
+            if (bufferIndex < 4) {
+                readBuffer[bufferIndex] = b;
+                bufferIndex++;
+            }
         }
-        if (readBuffer.length() == 4) {
-            dispatchSerialEvent(readBuffer.toString().toCharArray());
-            readBuffer.delete(0, readBuffer.length());
-            readBuffer.setLength(0);
+        if (readBuffer.length == 4) {
+            dispatchSerialEvent(readBuffer);
+            bufferIndex = 0;
         }
         bufferLock.unlock();
     }
 
-    private void dispatchSerialEvent(char[] data) {
+    private void dispatchSerialEvent(byte[] data) {
 
         /*
          * Implementation details
          * @see development.md
          */
         int address, val;
-        try {
-            // Handle op code
-            switch (data[0]) {
-                case READ_CALLBACK_CODE: // Read (single)
-                    address = (int) data[1];
-                    val = splice(data[2], data[3]);
-                    listener.didReadRegister(address, val);
-                    break;
-                case WRITE_CALLBACK_CODE: // Write (single)
-                    break;
-                default:
-                    throw new UnsupportedOperationException();
-            }
-        } catch (IndexOutOfBoundsException e) {
-            // malformed
+        // Handle op code
+        switch (data[0]) {
+            case READ_CALLBACK_CODE: // Read (single)
+                address = (int) data[1];
+                val = splice16(data[2], data[3]);
+                listener.didReadRegister(address, val);
+                break;
+            case WRITE_CALLBACK_CODE: // Write (single)
+                address = (int) data[1];
+                val = data[2];
+                listener.didWriteRegister(address, val > 0);
+                break;
+            default:
+                throw new UnsupportedOperationException();
         }
     }
 
-    public void setSamplifierResponseListener(SamplifierResponseListener listener) {
-        this.listener = listener;
-    }
-
-    public void writeRegister(char address, int data) {
+    public void writeRegister(int address, int data) {
         if (listener == null) {
-            return;
+            throw new RuntimeException();
         }
-        char[] buffer = new char[4];
-        buffer[0] = WRITE_OPERATION_CODE; // write opcode TODO: replace w/ global constant
-        buffer[1] = address;
-        buffer[2] = upperHalf(data);
-        buffer[3] = lowerHalf(data);
-        output.write(buffer);
+        short send1 = splice16(WRITE_OPERATION_CODE, (byte) address);
+        short send2 = (short) data;
+        System.out.printf("Write: %s (Opcode: %s) (Addr: %s) (Data top 8: %s) (Data bottom 8: %s)%n",
+                Integer.toBinaryString(splice32(send1, send2)),
+                Integer.toBinaryString((send1 & 0xFF00) >>> 8),
+                Integer.toBinaryString((send1 & 0x00FF)),
+                Integer.toBinaryString((send2 & 0xFF00) >>> 8),
+                Integer.toBinaryString((send2 & 0x00FF)));
+        output.write(send1);
+        output.write(send2);
         output.flush();
     }
 
-    public void readRegister(char address) {
-        char[] buffer = new char[4];
-        buffer[0] = READ_OPERATION_CODE;
-        buffer[1] = address;
-        buffer[2] = 0;
-        buffer[3] = 0;
-        output.write(buffer);
+    public void readRegister(int address) {
+        byte addr = (byte) address;
+
+        short send = splice16(READ_OPERATION_CODE, addr);
+        System.out.printf("Read: %s (Opcode: %s) (Addr: %s) (Data top 8: %s) (Data bottom 8: %s)%n",
+                Integer.toBinaryString(splice32(send, (short) 0)),
+                Integer.toBinaryString((send & 0xFF00) >>> 8),
+                Integer.toBinaryString((send & 0x00FF)),
+                Integer.toBinaryString(0),
+                Integer.toBinaryString(0));
+        output.write(send);
+        output.write(0);
         output.flush();
     }
 
@@ -140,16 +154,20 @@ public class SamplifierConnection {
         return serialPort.isOpen();
     }
 
-    private int splice(char msb, char lsb) {
-        return (((int) msb) << 8) | lsb;
+    private int splice32(short msb, short lsb) {
+        return (int) (((int) msb << 16) | lsb);
     }
 
-    private char upperHalf(int data) {
-        return (char) (data >>> 8);
+    private short splice16(byte msb, byte lsb) {
+        return (short) (((short) msb << 8) | lsb);
     }
 
-    private char lowerHalf(int data) {
-        return (char) data;
+    private byte upperHalf(short data) {
+        return (byte) (data >>> 8);
+    }
+
+    private byte lowerHalf(short data) {
+        return (byte) data;
     }
 
 }

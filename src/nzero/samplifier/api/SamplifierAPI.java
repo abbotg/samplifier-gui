@@ -16,7 +16,7 @@ public class SamplifierAPI {
     }
 
     @Nullable
-    public static SamplifierConnection createConnection(String portName) {
+    public static SamplifierConnection createConnection(String portName, SamplifierResponseListener listener) {
         SerialPort comPort = SerialPort.getCommPort(portName);
         comPort.setBaudRate(9600);
 
@@ -48,7 +48,7 @@ public class SamplifierAPI {
             System.out.println("Error opening port.");
             exit(1);
         }
-        SamplifierConnection connection = new SamplifierConnection(portName, comPort, output, input);
+        SamplifierConnection connection = new SamplifierConnection(portName, comPort, output, input, listener);
         return connection;
     }
 

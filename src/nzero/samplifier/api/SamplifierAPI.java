@@ -48,8 +48,7 @@ public class SamplifierAPI {
             System.out.println("Error opening port.");
             exit(1);
         }
-        SamplifierConnection connection = new SamplifierConnection(portName, comPort, output, input, listener);
-        return connection;
+        return new SamplifierConnection(portName, comPort, output, input, listener);
     }
 
     public static boolean isValidPort(String port) {

@@ -370,7 +370,7 @@ public class BasicMainWindow extends JFrame implements SamplifierMainWindow, GUI
 
     @Override
     public void readAll(ActionEvent e) {
-        // TODO
+        common.readAll(common.registers().stream().filter(Register::isReadable).collect(Collectors.toList()));
     }
 
     @Override

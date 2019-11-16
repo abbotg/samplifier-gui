@@ -141,7 +141,7 @@ public class RegisterTableModel extends AbstractTableModel {
 //        } else { // WRITE, READ/WRITE
 //            return col == 2; // TODO: globalize this
 //        }
-        return col == 2 && register.isWritable(); // TODO: BinaryInputPopup and decimal, hex, support
+        return col == 2 && register.isWritable() && getBitMap(row).getDataType() != DataType.BIN; // TODO: BinaryInputPopup and decimal, hex, support
     }
 
     @Override

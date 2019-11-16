@@ -62,8 +62,8 @@ public class SamplifierConnection {
                 }
                 byte[] newData = new byte[avail];
                 int numRead = serialPort.readBytes(newData, newData.length);
-                System.out.println("Read " + numRead + " bytes.");
-                System.out.println("Got data" + Arrays.toString(newData));
+//                System.out.println("Read " + numRead + " bytes.");
+//                System.out.println("Got data" + Arrays.toString(newData));
                 bufferSerialData(newData);
             }
         });
@@ -85,7 +85,6 @@ public class SamplifierConnection {
     }
 
     private void dispatchSerialEvent() {
-        System.out.println("SamplifierConnection.dispatchSerialEvent");
         byte[] data = new byte[4];
         for (int i = 0; i < 4; i++) {
             data[i] = readBuffer.poll();
@@ -124,7 +123,8 @@ public class SamplifierConnection {
         buf[1] = (byte) address;
         buf[2] = upperHalf((short) data);
         buf[3] = lowerHalf((short) data);
-        System.out.printf("GUI: %s ");
+
+//        System.out.printf("GUI: %s ");
 //        System.out.printf("Write: %s (Opcode: %s) (Addr: %s) (Data top 8: %s) (Data bottom 8: %s)%n",
 //                Integer.toBinaryString(splice32(send1, send2)),
 //                Integer.toBinaryString((send1 & 0xFF00) >>> 8),

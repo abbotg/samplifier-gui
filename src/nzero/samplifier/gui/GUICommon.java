@@ -367,7 +367,7 @@ public class GUICommon {
     private void write(Register register) {
         if (isConnected()) {
             connection.writeRegister((char) register.getAddress(), register.getData()); //TODO: char vs int?
-            System.out.printf("Wrote register %s at address %d (0b%s) with value %d (0b%s)%n",
+            System.out.printf("GUI: writing register %s at address %d (0b%s) with value %d (0b%s)%n",
                     register.getName(),
                     register.getAddress(),
                     Integer.toBinaryString(register.getAddress()),

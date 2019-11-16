@@ -828,21 +828,6 @@
     ]
   },
   {
-    "name": "RD_RF1",
-    "length" : 16,
-    "isWritable": false,
-    "isReadable": true,
-    "address": 33,
-    "bitMaps": [
-      {
-        "name": "0",
-        "msb": 15,
-        "lsb": 0,
-        "dataType": "BIN"
-      }
-    ]
-  },
-  {
     "name": "RD_BB1",
     "length" : 16,
     "isWritable": false,
@@ -872,21 +857,6 @@
         "msb": 0,
         "lsb": 0,
         "dataType": "BOOL"
-      }
-    ]
-  },
-  {
-    "name": "RD_MISC",
-    "length" : 16,
-    "isWritable": false,
-    "isReadable": true,
-    "address": 35,
-    "bitMaps": [
-      {
-        "name": "0",
-        "msb": 15,
-        "lsb": 0,
-        "dataType": "BIN"
       }
     ]
   },

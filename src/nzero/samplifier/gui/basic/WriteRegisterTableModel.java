@@ -82,7 +82,7 @@ public class WriteRegisterTableModel extends AbstractRegisterTableModel {
                     break;
             }
             if (val > bitMap.getDataMaxVal() || val < bitMap.getDataMinVal()) {
-                throw new InvalidInputLengthException();
+                throw new InvalidInputLengthException(data);
             }
         }
         getRegister().setData(bitMap, val);

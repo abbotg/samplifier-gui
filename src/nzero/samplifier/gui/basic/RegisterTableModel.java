@@ -15,7 +15,7 @@ public class RegisterTableModel extends AbstractTableModel {
     private Register register;
     private SamplifierMainWindow parent;
     private static String[] columnNames = {
-            "Bits (Length)",
+            "Data Type (Range)",
             "Description",
             "Data"
     };
@@ -37,7 +37,7 @@ public class RegisterTableModel extends AbstractTableModel {
         BitMap bitMap = getBitMap(rowIndex);
         switch (columnIndex) {
             case 0:
-                return bitMap.getBitRange() + " (" + bitMap.getLength() + ")";
+                return getFormattedRange(bitMap);
             case 1:
                 return bitMap.getName();
             case 2:
@@ -46,6 +46,21 @@ public class RegisterTableModel extends AbstractTableModel {
                 return null;
         }
 
+    }
+
+    private Object getFormattedRange(BitMap bitMap) {
+        switch (bitMap.getDataType()) {
+            case BOOL:
+                return "Boolean";
+            case BIN:
+                return String.format("Binary (%s)", bitMap.getFormattedRange());
+            case DEC:
+                return String.format("Decimal (%s)", bitMap.getFormattedRange());
+            case HEX:
+                return String.format("Hexadecimal (%s)", bitMap.getFormattedRange());
+            default:
+                return "";
+        }
     }
 
     private Object getFormattedData(BitMap bitMap) {
@@ -60,7 +75,7 @@ public class RegisterTableModel extends AbstractTableModel {
             case HEX:
                 return Integer.toHexString(data);
             default:
-                return null; // TODO: ?
+                return "";
         }
     }
 
@@ -126,26 +141,25 @@ public class RegisterTableModel extends AbstractTableModel {
 //        } else { // WRITE, READ/WRITE
 //            return col == 2; // TODO: globalize this
 //        }
-        return col == 2 && register.isWritable() && getBitMap(row).getLength() == 1; // TODO: BinaryInputPopup and decimal, hex, support
+        return col == 2 && register.isWritable(); // TODO: BinaryInputPopup and decimal, hex, support
     }
 
     @Override
     public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
         if (register.getRegisterType() != RegisterType.READ) { // its a WRITE, READ/WRITE
             if (DEBUG) {
-                System.out.println("Setting value at " + rowIndex + "," + columnIndex
-                        + " to " + aValue
-                        + " (an instance of "
-                        + aValue.getClass() + ")");
+                System.out.printf("Setting value at %d, %d to %s (an instance of %s)%n",
+                        rowIndex, columnIndex, aValue, aValue.getClass());
             }
 
             assert columnIndex == 2; // only editable column
             assert aValue instanceof String || aValue instanceof Boolean;
 
+            BitMap bitMap = getBitMap(rowIndex);
             try {
-                flattenAndSetData(getBitMap(rowIndex), aValue);
+                flattenAndSetData(bitMap, aValue);
             } catch (InvalidInputLengthException e) {
-                JOptionPane.showMessageDialog(null, "Input out of range");
+                JOptionPane.showMessageDialog(null, String.format("Input %s out of range, must be %s", e.getInput(), bitMap.getFormattedRange()));
             } catch (NumberFormatException e) {
                 JOptionPane.showMessageDialog(null, "Input data is not binary");
             }
@@ -179,7 +193,7 @@ public class RegisterTableModel extends AbstractTableModel {
                     break;
             }
             if (val > bitMap.getDataMaxVal() || val < bitMap.getDataMinVal()) {
-                throw new InvalidInputLengthException();
+                throw new InvalidInputLengthException(data);
             }
         }
         getRegister().setData(bitMap, val);

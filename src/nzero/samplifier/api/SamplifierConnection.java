@@ -124,6 +124,7 @@ public class SamplifierConnection {
         buf[1] = (byte) address;
         buf[2] = upperHalf((short) data);
         buf[3] = lowerHalf((short) data);
+        System.out.printf("GUI: %s ");
 //        System.out.printf("Write: %s (Opcode: %s) (Addr: %s) (Data top 8: %s) (Data bottom 8: %s)%n",
 //                Integer.toBinaryString(splice32(send1, send2)),
 //                Integer.toBinaryString((send1 & 0xFF00) >>> 8),

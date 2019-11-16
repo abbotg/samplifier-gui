@@ -20,7 +20,7 @@ public class BitMap {
         this.lsb = lsb;
 
         if (maxVal - minVal == 0) {
-            this.maxVal = 2 << getLength() - 1;
+            this.maxVal = (1 << getLength()) - 1;
             this.minVal = 0;
         } else {
             this.maxVal = maxVal;
@@ -69,6 +69,26 @@ public class BitMap {
 
     public int getDataRange() {
         return maxVal - minVal;
+    }
+
+    /**
+     * String in the format "min - max" using proper data types
+     */
+    public String getFormattedRange() {
+        switch (dataType) {
+            case BOOL:
+                return "0 - 1";
+            case BIN:
+                return String.format("0b%s - 0b%s",
+                        Integer.toBinaryString(getDataMinVal()),
+                        Integer.toBinaryString(getDataMaxVal()));
+            case DEC:
+                return String.format("%d - %d", getDataMinVal(), getDataMaxVal());
+            case HEX:
+                return String.format("0x%x - 0x%x", getDataMinVal(), getDataMaxVal());
+            default:
+                return "";
+        }
     }
 
     public DataType getDataType() {

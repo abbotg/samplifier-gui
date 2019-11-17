@@ -25,4 +25,7 @@ public interface SamplifierMainWindow {
     void addHintFor(Component component, Supplier<String> hint);
 
 
+    void writeConsole(String line);
+
+
 }

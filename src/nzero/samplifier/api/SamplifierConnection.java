@@ -28,6 +28,7 @@ public class SamplifierConnection {
     private static final byte
             READ_OPERATION_CODE = 0x0,
             WRITE_OPERATION_CODE = 0x1,
+            CHIP_RESET_CODE = 0x2,
             READ_CALLBACK_CODE = 0x0,
             WRITE_CALLBACK_CODE = 0x1;
 
@@ -155,7 +156,15 @@ public class SamplifierConnection {
 //        output.write(send);
 //        output.write(0);
         serialPort.writeBytes(buf, 4);
-        output.flush();
+//        output.flush();
+    }
+
+    public void chipReset() {
+        byte[] buf = new byte[4];
+        buf[0] = CHIP_RESET_CODE;
+        buf[1] = buf[2] = buf[3] = 0;
+        System.out.println("GUI: Sending reset command...");
+        serialPort.writeBytes(buf, 4);
     }
 
     public void disconnect() {

@@ -21,6 +21,9 @@ import java.util.prefs.Preferences;
  * Main class
  */
 public class SamplifierGUI {
+
+    public static final String SAMPLIFIER_GUI_VERSION = "v1.6-pre";
+
     private List<Register> registers;
     private ProfileManager profileManager;
     private GUICommon common;

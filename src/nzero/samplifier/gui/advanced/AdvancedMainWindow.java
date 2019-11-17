@@ -83,4 +83,9 @@ public class AdvancedMainWindow extends JFrame implements SamplifierMainWindow {
     public void addHintFor(Component component, Supplier<String> hint) {
         throw new UnsupportedOperationException();
     }
+
+    @Override
+    public void writeConsole(String line) {
+
+    }
 }

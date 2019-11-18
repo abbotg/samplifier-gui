@@ -1,8 +1,18 @@
 package nzero.samplifier.profile;
 
+import nzero.samplifier.SamplifierGUI;
 import nzero.samplifier.model.Register;
+import nzero.samplifier.util.FileUtils;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
+import java.io.FileWriter;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
@@ -109,6 +119,15 @@ public class ProfileManager {
         saveToPreferences(profile);
     }
 
+    private void createProfile(String name, Map<String, String> data) {
+        if (existsProfile(name)) {
+            removeProfile(name);
+        }
+        Profile profile = new Profile(name, data); // TODO: check for dup names? Propogate changed back to GUI?
+        profiles.add(profile);
+        saveToPreferences(profile);
+    }
+
     public void removeProfile(String name) {
         Profile profile = getProfile(name);
         if (profile != null) {
@@ -141,6 +160,60 @@ public class ProfileManager {
 
     public Optional<String> getDefaultProfile() {
         return Optional.ofNullable(defaultProfile == null ? null : defaultProfile.getName());
+    }
+
+    public void serialize(String profileName, String path) throws IOException {
+        if (!existsProfile(profileName)) {
+            return; // TODO: better return
+        }
+        Profile profile = getProfile(profileName);
+        JSONObject rootObject = new JSONObject();
+        rootObject.put("samplifier-gui-version", SamplifierGUI.SAMPLIFIER_GUI_VERSION);
+        rootObject.put("register-map-name", SamplifierGUI.getMapName());
+        rootObject.put("profile-name", profile.getName());
+
+        JSONArray registerArray = new JSONArray();
+        for (Map.Entry<String,String> entry : profile.getRegisterDataMap().entrySet()) {
+            JSONObject registerObject = new JSONObject();
+            registerObject.put("name", entry.getKey());
+            registerObject.put("data", entry.getValue());
+            registerArray.put(registerObject);
+        }
+        rootObject.put("registers", registerArray);
+
+        try (FileWriter fileWriter = new FileWriter(path)) {
+            fileWriter.write(rootObject.toString(2));
+        }
+    }
+
+    public String deserialize(String path) throws ProfileSerializeException {
+        Path file = Paths.get(path);
+        if (!Files.exists(file)) {
+            throw new ProfileSerializeException(String.format("file \"%s\" does not exist", path));
+        }
+        String content;
+        try {
+            content = FileUtils.readFile(path);
+        } catch (Exception e) {
+            throw new ProfileSerializeException(e.getMessage());
+        }
+        try {
+            Map<String, String> map = new LinkedHashMap<>();
+
+            JSONObject rootObject = new JSONObject(content);
+            JSONArray registersArray = rootObject.getJSONArray("registers");
+            for (int i = 0; i < registersArray.length(); i++) {
+                JSONObject registerObject = (JSONObject) registersArray.get(i);
+                map.put(registerObject.getString("name"), registerObject.getString("data"));
+            }
+            String name = rootObject.getString("profile-name");
+            createProfile(name, map);
+            return name;
+
+        } catch (JSONException e) {
+            throw new ProfileSerializeException(String.format("file is malformed (%s)", e.getMessage()));
+        }
+
     }
 
 }

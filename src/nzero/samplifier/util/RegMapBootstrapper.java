@@ -40,7 +40,13 @@ public class RegMapBootstrapper {
     private RegMapBootstrapper() {}
 
     public static List<Register> buildFromFile(String filename) {
-        return buildFromJsonString(FileUtils.readFile(filename));
+        try {
+            return buildFromJsonString(FileUtils.readFile(filename));
+        } catch (Exception e) {
+            e.printStackTrace(); // TODO
+            System.exit(1);
+            return null;
+        }
     }
 
     public static List<Register> buildFromResource(String resourcePath) {

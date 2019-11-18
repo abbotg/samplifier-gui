@@ -10,5 +10,7 @@ public interface SamplifierResponseListener {
 
     void portClosed(String portName);
 
+    void didResetChip();
+
     // ??
 }

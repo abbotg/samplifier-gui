@@ -107,7 +107,11 @@ public class SamplifierConnection {
                 val = data[2];
                 listener.didWriteRegister(address, val > 0);
                 break;
+            case CHIP_RESET_CODE:
+                listener.didResetChip();
+                break;
             default:
+                System.err.printf("Invalid response code from Arduino: %d", data[0]);
 //                throw new UnsupportedOperationException();
         }
     }

@@ -8,20 +8,16 @@ public class FileUtils {
 
     }
 
-    public static String readFile(String filename) {
+    public static String readFile(String filename) throws Exception {
         String result = "";
-        try {
-            BufferedReader br = new BufferedReader(new FileReader(filename));
-            StringBuilder sb = new StringBuilder();
-            String line = br.readLine();
-            while (line != null) {
-                sb.append(line);
-                line = br.readLine();
-            }
-            result = sb.toString();
-        } catch(Exception e) {
-            e.printStackTrace(); //todo: handle
+        BufferedReader br = new BufferedReader(new FileReader(filename));
+        StringBuilder sb = new StringBuilder();
+        String line = br.readLine();
+        while (line != null) {
+            sb.append(line);
+            line = br.readLine();
         }
+        result = sb.toString();
         return result;
     }
 

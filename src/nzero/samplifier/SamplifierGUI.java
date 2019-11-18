@@ -22,7 +22,7 @@ import java.util.prefs.Preferences;
  */
 public class SamplifierGUI {
 
-    public static final String SAMPLIFIER_GUI_VERSION = "v1.6-pre";
+    public static final String SAMPLIFIER_GUI_VERSION = "v1.7";
 
     private List<Register> registers;
     private ProfileManager profileManager;

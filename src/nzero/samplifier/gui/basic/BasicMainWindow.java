@@ -10,6 +10,8 @@ import nzero.samplifier.model.RegisterType;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
@@ -30,7 +32,7 @@ public class BasicMainWindow extends JFrame implements SamplifierMainWindow, GUI
     private GUICommon common;
 
     private RegisterPanelContainer writeContainer, readContainer, readWriteContainer;
-    private JLabel hintLabel;
+    private JLabel hintLabel, consoleLabel;
     private MouseOverHintManager2 hintManager;
 
 
@@ -38,7 +40,8 @@ public class BasicMainWindow extends JFrame implements SamplifierMainWindow, GUI
         super(GUICommon.WINDOW_NAME);
         this.common = common;
         this.popOutWindows = new ArrayList<>();
-        this.hintLabel = new JLabel();
+        this.consoleLabel = new JLabel("Startup");
+        this.hintLabel = new JLabel("Hints will appear here");
         this.hintManager = new MouseOverHintManager2(hintLabel);
 
         List<Register> read, write, readWrite;
@@ -76,19 +79,32 @@ public class BasicMainWindow extends JFrame implements SamplifierMainWindow, GUI
 
 //        rootPanel.add(hintLabel);
 
-        hintLabel.setBorder(BorderFactory.createLoweredBevelBorder());
+//        hintLabel.setBorder(BorderFactory.createLoweredBevelBorder());
+//        consoleLabel.setBorder(BorderFactory.createLoweredBevelBorder());
 //        hintLabel.setBorder(BorderFactory.createLoweredSoftBevelBorder());
+
+        JPanel labelContainer = new JPanel();
+        labelContainer.setLayout(new BoxLayout(labelContainer, BoxLayout.PAGE_AXIS));
+        labelContainer.setBorder(BorderFactory.createLoweredBevelBorder());
+
+        labelContainer.add(hintLabel);
+        labelContainer.add(new JSeparator());
+        labelContainer.add(consoleLabel);
 
         // Configure the JFrame
         setJMenuBar(common.createMenuBar());
         add(rootPanel);
-        add(hintLabel, BorderLayout.PAGE_END);
+        add(labelContainer, BorderLayout.PAGE_END);
+//        add(hintLabel, BorderLayout.PAGE_END);
+//        add(consoleLabel, BorderLayout.PAGE_END);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
 //        configureActionListeners();
         common.updateProfilesMenu();
 
         hintManager.enableHints(this);
+
+        writeConsole(GUICommon.CONSOLE_STARTUP_STRING);
 
         // Called last
         pack();
@@ -328,6 +344,11 @@ public class BasicMainWindow extends JFrame implements SamplifierMainWindow, GUI
     @Override
     public void addHintFor(Component component, Supplier<String> runnable) {
         hintManager.addHintFor(component, runnable);
+    }
+
+    @Override
+    public void writeConsole(String line) {
+        consoleLabel.setText(String.format("(%s) %s", LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss")), line));
     }
 
     private void cleanPopOutWindows() {

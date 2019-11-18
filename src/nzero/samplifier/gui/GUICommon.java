@@ -1,34 +1,55 @@
 package nzero.samplifier.gui;
 
 import com.fazecast.jSerialComm.SerialPort;
+import nzero.samplifier.SamplifierGUI;
 import nzero.samplifier.api.SamplifierAPI;
 import nzero.samplifier.api.SamplifierConnection;
 import nzero.samplifier.api.SamplifierResponseListener;
 import nzero.samplifier.gui.advanced.AdvancedMainWindow;
 import nzero.samplifier.gui.basic.BasicMainWindow;
 import nzero.samplifier.model.Register;
+import nzero.samplifier.profile.Profile;
 import nzero.samplifier.profile.ProfileManager;
 import nzero.samplifier.profile.ProfileMismatchException;
+import nzero.samplifier.profile.ProfileSerializeException;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.*;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+import java.util.function.Function;
 import java.util.prefs.Preferences;
 import java.util.stream.Collectors;
 
 public class GUICommon {
     private List<Register> registers;
     private ProfileManager profileManager;
-    private JMenu loadProfilesMenu, connectionMenu;
-    private JMenuItem connectionStatus, connectionButton;
+    private JMenu loadProfilesMenu;
+    private JMenuItem connectionStatus, connectionButton, resetButton;
     private JRadioButtonMenuItem basicModeButton, advancedModeButton;
     private GUIMode mode;
     private SamplifierMainWindow activeWindow;
     private SamplifierConnection connection;
     private SamplifierResponseListener listener;
 
+//    private Thread taskWaitThread; // waits on response from arduino
+//    private boolean taskCompleted;
+//    private Lock taskWaitLock;
+
     public static final String WINDOW_NAME = "Samplifier GUI";
 
+    private static final String DEFAULT_NOT_CONNECTED_MESSAGE = "Error: Not connected. To connect, click the \"Samplifier\" menu bar item.";
+    public static final String CONSOLE_STARTUP_STRING = String.format("Samplifier GUI %s (Java %s on %s %s %s)",
+            SamplifierGUI.SAMPLIFIER_GUI_VERSION,
+            System.getProperty("java.version"),
+            System.getProperty("os.name"),
+            System.getProperty("os.version"),
+            System.getProperty("os.arch"));
 
     public GUICommon(List<Register> registers, ProfileManager profileManager) {
         this.registers = registers;
@@ -37,6 +58,7 @@ public class GUICommon {
 
     /**
      * Must be called from the EDT
+     *
      * @param mode
      */
     public void setWindow(GUIMode mode) {
@@ -63,25 +85,12 @@ public class GUICommon {
 
     public JMenuBar createMenuBar() {
         JMenuBar menuBar;
-        JMenu viewMenu, profileMenu, helpMenu, samplifierMenu;
+        JMenu viewMenu, profileMenu, helpMenu, samplifierMenu, optionsMenu;
         JRadioButtonMenuItem radioButtonMenuItem;
         JMenuItem menuItem;
 
         // Create menu bar
         menuBar = new JMenuBar();
-
-        /// Connection menu ///
-        connectionMenu = new JMenu("Connection");
-
-        connectionStatus = new JMenuItem("Status: Disconnected");
-        connectionStatus.setEnabled(false);
-        connectionMenu.add(connectionStatus);
-
-        connectionButton = new JMenuItem("Connect");
-        connectionButton.addActionListener(this::connectionToggleButton);
-        connectionMenu.add(connectionButton);
-
-        updateConnectionMenu();
 
         /// View Menu ///
         viewMenu = new JMenu("View");
@@ -119,26 +128,62 @@ public class GUICommon {
         menuItem.addActionListener(this::profileSetDefaultButton);
         profileMenu.add(menuItem);
 
+        menuItem = new JMenuItem("Import...");
+        menuItem.addActionListener(this::profileImport);
+        profileMenu.add(menuItem);
+
+        menuItem = new JMenuItem("Export...");
+        menuItem.addActionListener(this::profileExport);
+        profileMenu.add(menuItem);
+
         //  samplifier menu
         samplifierMenu = new JMenu("Samplifier");
+
+        connectionStatus = new JMenuItem("Status: Disconnected");
+        connectionStatus.setEnabled(false);
+        samplifierMenu.add(connectionStatus);
+
+        connectionButton = new JMenuItem("Connect");
+        connectionButton.addActionListener(this::connectionToggleButton);
+        samplifierMenu.add(connectionButton);
+
+
+        samplifierMenu.addSeparator();
+
+        resetButton = new JMenuItem("Reset Chip");
+        resetButton.addActionListener(this::resetButton);
+        resetButton.setEnabled(false);
+        samplifierMenu.add(resetButton);
+
+        updateConnectionMenu();
+
+        // options menu
+        optionsMenu = new JMenu("Options");
+
         menuItem = new JMenuItem("Change Register Map...");
         menuItem.addActionListener(this::changeRegisterMap);
-        samplifierMenu.add(menuItem);
+        optionsMenu.add(menuItem);
 
 
         // placeholder
         helpMenu = new JMenu("Help");
 
         menuBar.add(samplifierMenu);
-        menuBar.add(connectionMenu);
         menuBar.add(viewMenu);
         menuBar.add(profileMenu);
+        menuBar.add(optionsMenu);
         menuBar.add(helpMenu);
 
 
-
-
         return menuBar;
+    }
+
+
+    private void resetButton(ActionEvent e) {
+        if (isConnected()) {
+            activeWindow.writeConsole("Sending reset command...");
+            connection.chipReset();
+        }
     }
 
 
@@ -175,6 +220,7 @@ public class GUICommon {
         } while (!valid);
 
         profileManager.createProfile(input, registers);
+        activeWindow.writeConsole(String.format("Created profile \"%s\" from current settings.", input));
         updateProfilesMenu();
     }
 
@@ -184,6 +230,52 @@ public class GUICommon {
             loadProfile(defaultProfile.get());
         } else {
             JOptionPane.showMessageDialog(getActiveFrame(), "No default profile set.");
+        }
+    }
+
+    private void profileImport(ActionEvent e) {
+        final JFileChooser fileChooser = new JFileChooser();
+        int retVal = fileChooser.showOpenDialog(getActiveFrame());
+        File file = fileChooser.getSelectedFile();
+        if (retVal != JFileChooser.APPROVE_OPTION || file == null) {
+            activeWindow.writeConsole("Export cancelled.");
+            return;
+        }
+        try {
+            String name = profileManager.deserialize(file.getAbsolutePath());
+            activeWindow.writeConsole(String.format("Successfully imported profile \"%s\" from %s.", name, file.getName()));
+        } catch (ProfileSerializeException ex) {
+            activeWindow.writeConsole("Import error: " + ex.getMessage());
+        }
+    }
+
+    private void profileExport(ActionEvent e) {
+        String profileName = (String) JOptionPane.showInputDialog(
+                getActiveFrame(),
+                "Select profile to export",
+                "Export",
+                JOptionPane.PLAIN_MESSAGE,
+                null,
+                profileManager.getProfiles().toArray(),
+                null
+        );
+        if (profileName == null) {
+            activeWindow.writeConsole("Export cancelled.");
+            return;
+        }
+
+        JFileChooser fileChooser = new JFileChooser();
+        int retVal = fileChooser.showSaveDialog(getActiveFrame());
+        File file = fileChooser.getSelectedFile();
+        if (retVal != JFileChooser.APPROVE_OPTION || file == null) {
+            activeWindow.writeConsole("Export cancelled.");
+            return;
+        }
+        try {
+            profileManager.serialize(profileName, file.getAbsolutePath());
+            activeWindow.writeConsole(String.format("Profile %s successfully exported to %s", profileName, file.getAbsolutePath()));
+        } catch (IOException ex) {
+            activeWindow.writeConsole(String.format("Export error: %s", ex.getMessage()));
         }
     }
 
@@ -203,6 +295,8 @@ public class GUICommon {
                 null,
                 possibilities,
                 null);
+        if (s == null)
+            return;
 
         profileManager.setDefaultProfile(s);
     }
@@ -210,6 +304,7 @@ public class GUICommon {
     private void loadProfile(String profile) {
         try {
             profileManager.loadProfile(profile, registers);
+            activeWindow.writeConsole(String.format("Loaded profile %s.", profile));
         } catch (ProfileMismatchException e) {
             JOptionPane.showMessageDialog(getActiveFrame(),
                     "Profile not compatible with the current register mapping",
@@ -245,9 +340,11 @@ public class GUICommon {
         if (isConnected()) {
             connectionStatus.setText("Status: Connected");
             connectionButton.setText("Disconnect");
+            resetButton.setEnabled(true);
         } else {
             connectionStatus.setText("Status: Disconnected");
             connectionButton.setText("Connect");
+            resetButton.setEnabled(false);
         }
     }
 
@@ -266,7 +363,7 @@ public class GUICommon {
             do {
                 input = JOptionPane.showInputDialog(getActiveFrame(),
                         sb.toString(),
-                        "/dev/ttyACM0"); // TODO: scan for existing
+                        ports.length > 0 ? ports[0].getSystemPortName() : ""); // TODO: scan for existing
                 if (input == null) {
                     return;
                 } else if (input.isEmpty()) {
@@ -277,11 +374,13 @@ public class GUICommon {
                         connection = SamplifierAPI.createConnection(input, new Listener());
                         if (connection == null) {
                             valid = false;
+                            activeWindow.writeConsole(String.format("Failed to connect to Arduino on \"%s\"", input));
                             JOptionPane.showMessageDialog(getActiveFrame(),
                                     "Connection failed",
                                     "Error",
                                     JOptionPane.ERROR_MESSAGE);
                         } else {
+                            activeWindow.writeConsole("Connected to Arduino.");
                             valid = true;
                         }
 
@@ -297,6 +396,7 @@ public class GUICommon {
         } else { // Connection already exists
             connection.disconnect();
             connection = null;
+            activeWindow.writeConsole("Disconnected from Arduino.");
         }
         updateConnectionMenu();
     }
@@ -322,8 +422,8 @@ public class GUICommon {
                     register.getAddress(),
                     Integer.toBinaryString(register.getAddress()),
                     data,
-                    Integer.toBinaryString(data)
-            );
+                    Integer.toBinaryString(data));
+            activeWindow.writeConsole(String.format("ARDUINO: Successfully read %s", register.getName()));
             register.setData(data);
             activeWindow.fireReadRegistersDataChange();
         }
@@ -347,6 +447,8 @@ public class GUICommon {
                     register.getName(),
                     register.getAddress(),
                     Integer.toBinaryString(register.getAddress()));
+            activeWindow.writeConsole(String.format(
+                    success ? "ARDUINO: Successfully wrote %s" : "ARDUINO: Failed to write %s", register.getName()));
         }
 
         @Override
@@ -357,29 +459,36 @@ public class GUICommon {
         @Override
         public void portClosed(String portName) {
             connection.disconnect();
+            updateConnectionMenu();
             JOptionPane.showMessageDialog(getActiveFrame(),
                     "Port closed",
                     "Error",
                     JOptionPane.ERROR_MESSAGE);
         }
+
+        @Override
+        public void didResetChip() {
+            activeWindow.writeConsole("ARDUINO: Chip was reset.");
+        }
     }
 
     private void write(Register register) {
         if (isConnected()) {
-            connection.writeRegister((char) register.getAddress(), register.getData()); //TODO: char vs int?
-            System.out.printf("GUI: writing register %s at address %d (0b%s) with value %d (0b%s)%n",
+            activeWindow.writeConsole(String.format("Requesting write of register %s...", register.getName()));
+            System.out.printf("Requesting write of register %s at address %d (0b%s) with value %d (0b%s)%n",
                     register.getName(),
                     register.getAddress(),
                     Integer.toBinaryString(register.getAddress()),
                     register.getData(),
                     register.getBinaryString()
             );
+            connection.writeRegister((char) register.getAddress(), register.getData()); //TODO: char vs int?
             try {
                 Thread.sleep(50);
             } catch (InterruptedException ignored) {
             }
         } else {
-            System.err.println("Not connected"); // TODO: gui alert
+            activeWindow.writeConsole(DEFAULT_NOT_CONNECTED_MESSAGE);
         }
     }
 
@@ -411,7 +520,7 @@ public class GUICommon {
                 write(register);
             }
         } else {
-            System.out.println("not written");
+            activeWindow.writeConsole("Write cancelled.");
         }
     }
 
@@ -421,20 +530,21 @@ public class GUICommon {
 
     public void read(Register register) { // TODO: what if register not read?
         if (isConnected()) {
-            System.out.printf("Requesting read of register %s addr %d%n", register.getName(), register.getAddress());
-            connection.readRegister((char) register.getAddress()); // TODO: address char or int?
+            activeWindow.writeConsole(String.format("Requesting read of register %s addr %d...%n", register.getName(), register.getAddress()));
+            connection.readRegister((char) register.getAddress());
         } else {
-            System.err.println("Not connected"); // TODO: gui alert
+            activeWindow.writeConsole(DEFAULT_NOT_CONNECTED_MESSAGE);
         }
     }
 
     public void readAll(Collection<Register> registers) {
         if (isConnected()) {
+            activeWindow.writeConsole("Requesting read of all registers...");
             for (Register register : registers) {
                 connection.readRegister((char) register.getAddress()); // TODO: address char or int?
             }
         } else {
-            System.err.println("Not connected"); // TODO: gui alert
+            activeWindow.writeConsole(DEFAULT_NOT_CONNECTED_MESSAGE);
         }
     }
 

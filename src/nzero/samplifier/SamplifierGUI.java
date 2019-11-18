@@ -21,9 +21,13 @@ import java.util.prefs.Preferences;
  * Main class
  */
 public class SamplifierGUI {
+
+    public static final String SAMPLIFIER_GUI_VERSION = "v1.6-pre";
+
     private List<Register> registers;
     private ProfileManager profileManager;
     private GUICommon common;
+    private static String mapName;
 
     private SamplifierGUI() {
         // empty
@@ -108,6 +112,13 @@ public class SamplifierGUI {
         this.common = new GUICommon(this.registers, this.profileManager);
     }
 
+    public static String getMapName() {
+        if (mapName == null) {
+            throw new RuntimeException("getMapName called before promptRegisterMapOrDefault");
+        }
+        return mapName;
+    }
+
     /**
      * Returns resource paths
      */
@@ -130,6 +141,7 @@ public class SamplifierGUI {
                 preferences.put("last", mapName);
             }
         }
+        SamplifierGUI.mapName = mapName;
         return "map/" + mapName + ".json";
     }
 

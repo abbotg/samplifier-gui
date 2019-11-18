@@ -143,4 +143,12 @@ public class ProfileManager {
         return Optional.ofNullable(defaultProfile == null ? null : defaultProfile.getName());
     }
 
+    public String serialize(String name) {
+        return null;
+    }
+
+    public String deserialize(String serialized) {
+        return null;
+    }
+
 }

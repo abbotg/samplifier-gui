@@ -230,23 +230,24 @@ public class GUICommon {
     }
 
     private void profileImport(ActionEvent e) {
-//        final JFileChooser fileChooser = new JFileChooser();
-//        int retVal = fileChooser.showOpenDialog(getActiveFrame());
-//        if (retVal == JFileChooser.APPROVE_OPTION) {
-//            File file = fileChooser.getSelectedFile();
-//            String content = null;
-//            try {
-//                content = new String(Files.readAllBytes(Paths.get(file.getAbsolutePath())));
-//            } catch (IOException i) {
-//
-//            }
-//        } else {
-//
-//        }
+        final JFileChooser fileChooser = new JFileChooser();
+        int retVal = fileChooser.showOpenDialog(getActiveFrame());
+        if (retVal == JFileChooser.APPROVE_OPTION) {
+            File file = fileChooser.getSelectedFile();
+            String content = null;
+            try {
+                content = new String(Files.readAllBytes(Paths.get(file.getAbsolutePath())));
+            } catch (IOException i) {
+                activeWindow.writeConsole(String.format("Error: Couldn't read file %s", file.getName()));
+                return;
+            }
+
+        } else {
+
+        }
     }
 
     private void profileExport(ActionEvent e) {
-
     }
 
     private void changeRegisterMap(ActionEvent e) {

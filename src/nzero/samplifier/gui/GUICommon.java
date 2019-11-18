@@ -220,6 +220,7 @@ public class GUICommon {
         } while (!valid);
 
         profileManager.createProfile(input, registers);
+        activeWindow.writeConsole(String.format("Created profile \"%s\" from current settings.", input));
         updateProfilesMenu();
     }
 
@@ -303,6 +304,7 @@ public class GUICommon {
     private void loadProfile(String profile) {
         try {
             profileManager.loadProfile(profile, registers);
+            activeWindow.writeConsole(String.format("Loaded profile %s.", profile));
         } catch (ProfileMismatchException e) {
             JOptionPane.showMessageDialog(getActiveFrame(),
                     "Profile not compatible with the current register mapping",
@@ -457,10 +459,16 @@ public class GUICommon {
         @Override
         public void portClosed(String portName) {
             connection.disconnect();
+            updateConnectionMenu();
             JOptionPane.showMessageDialog(getActiveFrame(),
                     "Port closed",
                     "Error",
                     JOptionPane.ERROR_MESSAGE);
+        }
+
+        @Override
+        public void didResetChip() {
+            activeWindow.writeConsole("ARDUINO: Chip was reset.");
         }
     }
 

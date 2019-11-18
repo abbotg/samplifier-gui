@@ -27,6 +27,7 @@ public class SamplifierGUI {
     private List<Register> registers;
     private ProfileManager profileManager;
     private GUICommon common;
+    private static String mapName;
 
     private SamplifierGUI() {
         // empty
@@ -111,6 +112,13 @@ public class SamplifierGUI {
         this.common = new GUICommon(this.registers, this.profileManager);
     }
 
+    public static String getMapName() {
+        if (mapName == null) {
+            throw new RuntimeException("getMapName called before promptRegisterMapOrDefault");
+        }
+        return mapName;
+    }
+
     /**
      * Returns resource paths
      */
@@ -133,6 +141,7 @@ public class SamplifierGUI {
                 preferences.put("last", mapName);
             }
         }
+        SamplifierGUI.mapName = mapName;
         return "map/" + mapName + ".json";
     }
 

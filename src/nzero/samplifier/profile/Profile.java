@@ -108,4 +108,8 @@ public class Profile {
     Collection<String> getRegisterNames() {
         return registerData.keySet();
     }
+
+    public Map<String, String> getRegisterDataMap() {
+        return Collections.unmodifiableMap(registerData);
+    }
 }

@@ -8,8 +8,10 @@ import nzero.samplifier.api.SamplifierResponseListener;
 import nzero.samplifier.gui.advanced.AdvancedMainWindow;
 import nzero.samplifier.gui.basic.BasicMainWindow;
 import nzero.samplifier.model.Register;
+import nzero.samplifier.profile.Profile;
 import nzero.samplifier.profile.ProfileManager;
 import nzero.samplifier.profile.ProfileMismatchException;
+import nzero.samplifier.profile.ProfileSerializeException;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -20,6 +22,7 @@ import java.nio.file.Paths;
 import java.util.*;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.function.Function;
 import java.util.prefs.Preferences;
 import java.util.stream.Collectors;
 
@@ -232,22 +235,47 @@ public class GUICommon {
     private void profileImport(ActionEvent e) {
         final JFileChooser fileChooser = new JFileChooser();
         int retVal = fileChooser.showOpenDialog(getActiveFrame());
-        if (retVal == JFileChooser.APPROVE_OPTION) {
-            File file = fileChooser.getSelectedFile();
-            String content = null;
-            try {
-                content = new String(Files.readAllBytes(Paths.get(file.getAbsolutePath())));
-            } catch (IOException i) {
-                activeWindow.writeConsole(String.format("Error: Couldn't read file %s", file.getName()));
-                return;
-            }
-
-        } else {
-
+        File file = fileChooser.getSelectedFile();
+        if (retVal != JFileChooser.APPROVE_OPTION || file == null) {
+            activeWindow.writeConsole("Export cancelled.");
+            return;
+        }
+        try {
+            String name = profileManager.deserialize(file.getAbsolutePath());
+            activeWindow.writeConsole(String.format("Successfully imported profile \"%s\" from %s.", name, file.getName()));
+        } catch (ProfileSerializeException ex) {
+            activeWindow.writeConsole("Import error: " + ex.getMessage());
         }
     }
 
     private void profileExport(ActionEvent e) {
+        String profileName = (String) JOptionPane.showInputDialog(
+                getActiveFrame(),
+                "Select profile to export",
+                "Export",
+                JOptionPane.PLAIN_MESSAGE,
+                null,
+                profileManager.getProfiles().toArray(),
+                null
+        );
+        if (profileName == null) {
+            activeWindow.writeConsole("Export cancelled.");
+            return;
+        }
+
+        JFileChooser fileChooser = new JFileChooser();
+        int retVal = fileChooser.showSaveDialog(getActiveFrame());
+        File file = fileChooser.getSelectedFile();
+        if (retVal != JFileChooser.APPROVE_OPTION || file == null) {
+            activeWindow.writeConsole("Export cancelled.");
+            return;
+        }
+        try {
+            profileManager.serialize(profileName, file.getAbsolutePath());
+            activeWindow.writeConsole(String.format("Profile %s successfully exported to %s", profileName, file.getAbsolutePath()));
+        } catch (IOException ex) {
+            activeWindow.writeConsole(String.format("Export error: %s", ex.getMessage()));
+        }
     }
 
     private void changeRegisterMap(ActionEvent e) {

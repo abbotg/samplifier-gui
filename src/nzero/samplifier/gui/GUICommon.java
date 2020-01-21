@@ -244,6 +244,7 @@ public class GUICommon {
         try {
             String name = profileManager.deserialize(file.getAbsolutePath());
             activeWindow.writeConsole(String.format("Successfully imported profile \"%s\" from %s.", name, file.getName()));
+            updateProfilesMenu();
         } catch (ProfileSerializeException ex) {
             activeWindow.writeConsole("Import error: " + ex.getMessage());
         }
@@ -282,6 +283,7 @@ public class GUICommon {
     private void changeRegisterMap(ActionEvent e) {
         Preferences preferences = Preferences.userRoot().node("nzero/samplifier/regmap");
         preferences.remove("last");
+        preferences.remove("lastBuiltIn");
         JOptionPane.showMessageDialog(getActiveFrame(), "The register map selection popup will now appear the next time the program is restarted.");
     }
 

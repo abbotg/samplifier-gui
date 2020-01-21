@@ -6,13 +6,18 @@ import nzero.samplifier.model.DataType;
 import nzero.samplifier.model.Register;
 import nzero.samplifier.model.RegisterType;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
+import javax.swing.JOptionPane;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
+import java.util.prefs.Preferences;
 
 public class RegMapBootstrapper {
 
@@ -27,8 +32,8 @@ public class RegMapBootstrapper {
             KEY_DATA_TYPE = "dataType",
             KEY_MAX_VAL = "dataMax",
             KEY_MIN_VAL = "dataMin",
-            /* Register keys */
-            KEY_REGISTER_NAME = "name",
+    /* Register keys */
+    KEY_REGISTER_NAME = "name",
             KEY_IS_WRITABLE = "isWritable",
             KEY_IS_READABLE = "isReadable",
             KEY_ADDRESS = "address",
@@ -36,14 +41,18 @@ public class RegMapBootstrapper {
             KEY_LENGTH = "length";
 
 
+    private RegMapBootstrapper() {
+    }
 
-    private RegMapBootstrapper() {}
-
-    public static List<Register> buildFromFile(String filename) {
+    public static List<Register> buildFromFile(String filename) throws IOException {
         try {
             return buildFromJsonString(FileUtils.readFile(filename));
-        } catch (Exception e) {
-            e.printStackTrace(); // TODO
+        } catch (JSONException e) {
+            JOptionPane.showMessageDialog(null,
+                    String.format("Error parsing file %s: %s", filename, e.getMessage()),
+                    "Parse error",
+                    JOptionPane.ERROR_MESSAGE);
+            clearDefaultRegMapPreferences();
             System.exit(1);
             return null;
         }
@@ -54,10 +63,20 @@ public class RegMapBootstrapper {
         InputStream input = classLoader.getResourceAsStream(resourcePath);
         assert input != null;
         String text = new Scanner(input, "UTF-8").useDelimiter("\\A").next();
-        return buildFromJsonString(text);
+        try {
+            return buildFromJsonString(text);
+        } catch (JSONException e) {
+            JOptionPane.showMessageDialog(null,
+                    String.format("Error parsing file %s: %s", resourcePath, e.getMessage()),
+                    "Parse error",
+                    JOptionPane.ERROR_MESSAGE);
+            clearDefaultRegMapPreferences();
+            System.exit(1);
+            return null;
+        }
     }
 
-    public static List<Register> buildFromJsonString(String jsonData) {
+    public static List<Register> buildFromJsonString(String jsonData) throws JSONException {
         List<Register> registers = new ArrayList<>();
 
         JSONArray registerArray = new JSONArray(jsonData);
@@ -180,7 +199,13 @@ public class RegMapBootstrapper {
     }
 
     private static void fail(String msg) {
-        System.err.println(msg);
+        JOptionPane.showMessageDialog(null,
+                String.format("Error parsing register map: %s", msg),
+                "Register Map Parse Error",
+                JOptionPane.ERROR_MESSAGE);
+        System.err.printf("Reg map parse error: %s%n", msg);
+        System.err.println("Clearing default reg map preferences");
+        clearDefaultRegMapPreferences();
         System.exit(1);
     }
 
@@ -190,6 +215,36 @@ public class RegMapBootstrapper {
 
     public static String[] getAvailableRegMaps() {
         return SamplifierConstants.BundledRegisterMaps;
+    }
+
+    public static boolean isDefaultRegMapSet() {
+        Preferences preferences = Preferences.userRoot().node("nzero/samplifier/regmap");
+        return preferences.get("last", null) != null;
+    }
+
+    /**
+     * Returns true if the default register map is a resource built in to the JAR file,
+     * otherwise it is an external file in the filesystem
+     */
+    public static boolean isDefaultBuiltIn() {
+        Preferences preferences = Preferences.userRoot().node("nzero/samplifier/regmap");
+        return preferences.getBoolean("lastBuiltIn", false);
+    }
+
+    public static void setLastBuiltIn(boolean value) {
+        Preferences preferences = Preferences.userRoot().node("nzero/samplifier/regmap");
+        preferences.putBoolean("lastBuiltIn", value);
+    }
+
+    public static String getDefaultRegMap() {
+        Preferences preferences = Preferences.userRoot().node("nzero/samplifier/regmap");
+        return preferences.get("last", null);
+    }
+
+    public static void clearDefaultRegMapPreferences() {
+        Preferences preferences = Preferences.userRoot().node("nzero/samplifier/regmap");
+        preferences.remove("last");
+        preferences.remove("lastBuiltIn");
     }
 
 
